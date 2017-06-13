@@ -4,7 +4,9 @@ import sys
 
 
 def add_pre_commit():
+    print('Starting pre-commit setup.....')
     os.system("cp pre-commit-example .git/hooks/pre-commit")
+    os.system("chmod +x .git/hooks/pre-commit")
     print("Pre-commit setup complete")
 
 if __name__ == "__main__":
