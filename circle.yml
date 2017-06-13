@@ -1,0 +1,17 @@
+machine:
+  node:
+    version: 5.7.1
+  python:
+    version: 3.6.1
+  environment:
+    DJANGO_SETTINGS_MODULE: hc.settings
+dependencies:
+  pre:
+    - virtualenv --python=python3 --no-site-packages hcenv
+    - source hcenv/bin/activate
+    - pip install -r requirements.txt
+    - createdb hc
+test:
+  override:
+    - python manage.py migrate
+    - python manage.py test
