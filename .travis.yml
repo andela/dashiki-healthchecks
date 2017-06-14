@@ -2,8 +2,6 @@ language: python
 python:
   - "3.6.1"
 install:
-  - virtualenv --python=python3 --no-site-packages hcenv
-  - source hcenv/bin/activate
   - pip install -r requirements.txt
   - createdb hc
 env:
@@ -14,3 +12,5 @@ script:
   - coverage run --omit="*/tests/*" --source=hc manage.py test
 after_success: coveralls
 cache: pip
+notifications:
+  slack: andela:x4a6Z3h0eVwlWzhOvu4Sc1AT
