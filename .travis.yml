@@ -1,17 +1,16 @@
 language: python
 python:
-  - "2.7"
-  - "3.4"
+  - "3.6.1"
 install:
-    - pip install -r requirements.txt
-    - pip install braintree coveralls mock mysqlclient
+  - virtualenv --python=python3 --no-site-packages hcenv
+  - source hcenv/bin/activate
+  - pip install -r requirements.txt
+  - createdb hc
 env:
-  - DB=sqlite
-  - DB=mysql
   - DB=postgres
 addons:
   postgresql: "9.4"
 script:
-  - coverage run --omit=*/tests/* --source=hc manage.py test
+  - coverage run --omit="*/tests/*" --source=hc manage.py test
 after_success: coveralls
 cache: pip
