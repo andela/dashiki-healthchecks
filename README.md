@@ -1,6 +1,6 @@
 # Healthchecks
 
-[![CircleCI](https://circleci.com/gh/andela/dashiki-healthchecks/tree/master.svg?style=svg)](https://circleci.com/gh/andela/dashiki-healthchecks/tree/master)
+[![CircleCI](https://circleci.com/gh/andela/dashiki-healthchecks/tree/master.svg?style=svg)](https://circleci.com/gh/andela/dashiki-healthchecks/tree/master) [![Build Status](https://www.travis-ci.org/andela/dashiki-healthchecks.svg?branch=master)](https://www.travis-ci.org/andela/dashiki-healthchecks) [![Coverage Status](https://coveralls.io/repos/github/andela/dashiki-healthchecks/badge.svg?branch=develop)](https://coveralls.io/github/andela/dashiki-healthchecks?branch=develop)
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
