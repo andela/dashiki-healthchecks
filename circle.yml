@@ -15,3 +15,5 @@ test:
   override:
     - python manage.py migrate
     - python manage.py test
+    - coverage run --omit="*/tests/*" --source=hc manage.py test
+    - COVERALLS_REPO_TOKEN=W59TPmFxIp6ZFKu1GwdhBs0E5C0UUjbLW coveralls
