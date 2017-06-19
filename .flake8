@@ -1,0 +1,4 @@
+[flake8]
+ignore = D203
+max-line-length=119
+exclude = docs/*, build/*, .git/*, manage.py

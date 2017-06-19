@@ -1,4 +1,6 @@
-# healthchecks
+# Healthchecks
+
+[![CircleCI](https://circleci.com/gh/andela/dashiki-healthchecks/tree/develop.svg?style=svg)](https://circleci.com/gh/andela/dashiki-healthchecks/tree/develop) [![Build Status](https://www.travis-ci.org/andela/dashiki-healthchecks.svg?branch=master)](https://www.travis-ci.org/andela/dashiki-healthchecks) [![Coverage Status](https://coveralls.io/repos/github/andela/dashiki-healthchecks/badge.svg?branch=develop)](https://coveralls.io/github/andela/dashiki-healthchecks?branch=develop)
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
@@ -176,11 +178,11 @@ There are separate Django management commands for each task:
 
     ```
     $ ./manage.py pruneusers
-    ```    
+    ```
 
-When you first try these commands on your data, it is a good idea to 
-test them on a copy of your database, not on the live database right away. 
-In a production setup, you should also have regular, automated database 
+When you first try these commands on your data, it is a good idea to
+test them on a copy of your database, not on the live database right away.
+In a production setup, you should also have regular, automated database
 backups set up.
 
 ## Integrations
