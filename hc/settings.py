@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 HOST = "localhost"
 SECRET_KEY = "---"
-DEBUG = True
+DEBUG = os.environ.get("DEBUG") or True
 ALLOWED_HOSTS = []
 DEFAULT_FROM_EMAIL = 'healthchecks@example.org'
 USE_PAYMENTS = False
@@ -110,14 +110,10 @@ if os.environ.get("DB") == "mysql":
             'TEST': {'CHARSET': 'UTF8'}
         }
     }
-if os.environ.get("ENVIRONMENT") == "staging":
+
+if DEBUG:
     db_from_env = dj_database_url.config(conn_max_age=500)
     DATABASES['default'].update(db_from_env)
-
-if os.environ.get("ENVIRONMENT") == "production":
-    db_from_env = dj_database_url.config(conn_max_age=500)
-    DATABASES['default'].update(db_from_env)
-
 
 LANGUAGE_CODE = 'en-us'
 
