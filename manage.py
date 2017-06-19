@@ -2,6 +2,8 @@
 import os
 import sys
 
+from hc.settings import DEBUG
+
 
 def add_pre_commit():
     print('Starting pre-commit setup.....')
@@ -10,7 +12,7 @@ def add_pre_commit():
     print("Pre-commit setup complete")
 
 if __name__ == "__main__":
-    if not os.getenv("ENVIRONMENT") == "testing":
+    if DEBUG:
         add_pre_commit()  # Add pre-commit configurations
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hc.settings")
