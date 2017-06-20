@@ -37,7 +37,7 @@ class AddChannelTestCase(BaseTestCase):
             r = self.client.get(url)
             self.assertContains(r, "Integration Settings", status_code=200)
 
-    ### Test that the team access works
+    # Test that the team access works
     def test_team_access_works(self):
         url = "/integrations/add/"
         form = {"kind": "email", "value": "alice@example.org"}
@@ -46,12 +46,10 @@ class AddChannelTestCase(BaseTestCase):
         response = self.client.post(url, form)
 
         self.assertRedirects(response, "/integrations/")
-        assert Channel.objects.count() == 1
         self.client.logout()
 
         self.client.login(username="bob@example.org", password="password")
-        response = self.client.get("/integrations/")
-        assert Channel.objects.count() == 1
+        response1 = self.client.get("/integrations/")
+        self.assertIn("alice@example.org", str(response1.content))
 
-
-    ### Test that bad kinds don't work
+    # Test that bad kinds don't work
