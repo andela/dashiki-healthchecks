@@ -53,3 +53,10 @@ class AddChannelTestCase(BaseTestCase):
         self.assertIn("alice@example.org", str(response1.content))
 
     # Test that bad kinds don't work
+    def test_bad_kinds_do_not_work(self):
+        url = "/integrations/add/"
+        form = {"kind": "whatsApp", "value": "alice"}
+
+        self.client.login(username="alice@example.org", password="password")
+        response = self.client.post(url, form)
+        self.assertEqual(response.status_code, 400)
