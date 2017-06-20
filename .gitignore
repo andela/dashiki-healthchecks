@@ -9,3 +9,5 @@ static-collected
 static/.DS_Store
 
 .idea
+
+htmlcov
