@@ -1,14 +1,16 @@
-from django.core import mail
-
 from hc.test import BaseTestCase
 from hc.accounts.models import Member
 from hc.api.models import Check
+
+from django.core import mail
 
 
 class ProfileTestCase(BaseTestCase):
 
     def test_it_sends_set_password_link(self):
         self.client.login(username="alice@example.org", password="password")
+
+        initial_mail_count = len(mail.outbox)
 
         form = {"set_password": "1"}
         r = self.client.post("/accounts/profile/", form)
@@ -17,20 +19,34 @@ class ProfileTestCase(BaseTestCase):
         # profile.token should be set now
         self.alice.profile.refresh_from_db()
         token = self.alice.profile.token
-        ### Assert that the token is set
+        # Assert that the token is set
+        self.assertTrue(token is not None)
+        self.assertTrue(len(token) > 0)
 
-        ### Assert that the email was sent and check email content
+        # Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
+        self.assertEqual(mail.outbox[0].subject, "Set password on healthchecks.io")
+        self.assertTrue("link to set a password for your account"
+                        " on healthchecks".lower() in mail.outbox[0].body.lower())
 
     def test_it_sends_report(self):
+        initial_mail_count = len(mail.outbox)
+
         check = Check(name="Test Check", user=self.alice)
         check.save()
 
         self.alice.profile.send_report()
 
-        ###Assert that the email was sent and check email content
+        # Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
+        self.assertEqual(mail.outbox[len(mail.outbox) - 1].subject, "Monthly Report")
+        self.assertTrue("this is a monthly report sent"
+                        " by healthchecks.io" in mail.outbox[len(mail.outbox) - 1].body.lower())
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")
+
+        initial_outbox_count = len(mail.outbox)
 
         form = {"invite_team_member": "1", "email": "frank@example.org"}
         r = self.client.post("/accounts/profile/", form)
@@ -40,11 +56,17 @@ class ProfileTestCase(BaseTestCase):
         for member in self.alice.profile.member_set.all():
             member_emails.add(member.user.email)
 
-        ### Assert the existence of the member emails
+        # Assert the existence of the member emails
+        self.assertEqual(len(member_emails), len(self.alice.profile.member_set.all()))
 
         self.assertTrue("frank@example.org" in member_emails)
 
-        ###Assert that the email was sent and check email content
+        # Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox) - initial_outbox_count, 1)
+        self.assertEqual(mail.outbox[len(mail.outbox) - 1].subject, "You have been invited to"
+                                                                    " join alice@example.org on healthchecks.io")
+        self.assertTrue("alice@example.org invites you to their "
+                        "healthchecks.io account" in mail.outbox[len(mail.outbox) - 1].body.lower())
 
     def test_add_team_member_checks_team_access_allowed_flag(self):
         self.client.login(username="charlie@example.org", password="password")
@@ -107,4 +129,4 @@ class ProfileTestCase(BaseTestCase):
         # Expect only Alice's tags
         self.assertNotContains(r, "bobs-tag.svg")
 
-    ### Test it creates and revokes API key
+    # Test it creates and revokes API key
