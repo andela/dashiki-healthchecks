@@ -38,4 +38,4 @@ class AddPushoverTestCase(BaseTestCase):
         r = self.client.get("/integrations/add_pushover/?%s" % params)
         assert r.status_code == 403
 
-    ### Test that pushover validates priority
+    # Test that pushover validates priority
