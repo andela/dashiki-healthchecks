@@ -47,5 +47,5 @@ class AddPushoverTestCase(BaseTestCase):
         session.save()
 
         params = "pushover_user_key=a&nonce=n&prio=7"
-        response = self.client.get("/integrations/add_pushover/?%s" % params)
+        response = self.client.get(reverse("hc-add-pushover") + "?%s" % params)
         assert response.status_code == 400
