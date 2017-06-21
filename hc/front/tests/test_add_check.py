@@ -1,5 +1,6 @@
 from hc.api.models import Check
 from hc.test import BaseTestCase
+from django.urls import reverse
 
 
 class AddCheckTestCase(BaseTestCase):
@@ -19,5 +20,5 @@ class AddCheckTestCase(BaseTestCase):
         self.client.logout()
 
         self.client.login(username="bob@example.org", password="password")
-        r = self.client.get("/checks/")
+        r = self.client.get(reverse("hc-checks"))
         self.assertContains(r, "Alice Was Here", status_code=200)
