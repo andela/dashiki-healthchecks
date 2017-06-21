@@ -27,6 +27,10 @@ class LoginTestCase(TestCase):
 
         # Assert for user count increment
         self.assertEqual(final_count - initial_count, 1)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4c11679... [#147170291] Fixed login test case tests
 
         # And email sent
         self.assertEqual(len(mail.outbox), 1)
