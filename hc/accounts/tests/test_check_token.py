@@ -3,7 +3,6 @@ from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 from hc.accounts.models import User, Profile
 import uuid
-from django.utils.html import strip_tags
 
 
 class CheckTokenTestCase(BaseTestCase):
@@ -59,30 +58,3 @@ class CheckTokenTestCase(BaseTestCase):
         response = self.client.post(uri, params)
         self.assertRedirects(response, '/accounts/login/')
     # Any other tests?
-
-    def test_content_login_bad_token(self):
-        user = User(username="demo", email="demo@andela.com")
-        user.set_password("demo123456")
-        user.save()
-
-#         create profile of user instance
-        profile = Profile(user=user)
-        correct, wrong = str(uuid.uuid4()), str(uuid.uuid4())
-        profile.token = make_password(correct)
-
-        uri = reverse("hc-check-token", args=[user.username, wrong])
-        response = self.client.post(uri, {"username": user.username, "token": wrong}, follow=True)
-        self.assertTrue("incorrect login link" in strip_tags(response.content).lower())
-
-    def test_correct_login_content(self):
-        user = User(username="lorem", email="lorem@ipsum.org")
-        user.set_password("lorem123456")
-        user.save()
-
-        # Login test user with valid credentials
-        self.client.login(username="lorem@ipsum.org", password="lorem123456")
-        response = self.client.get("/", follow=True)
-        content = strip_tags(response.content).lower()
-
-#         confirm dashboard
-        self.assertTrue(user.email in content and 'account settings' in content and 'log out' in content)
