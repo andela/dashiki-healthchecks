@@ -51,6 +51,14 @@ def ping(request, code):
 @validate_json(schemas.check)
 def checks(request):
     if request.method == "GET":
+        assign_to_channels = request.GET.get('channels', '')
+        check_id = request.GET.get('id', '')
+        if assign_to_channels == 'true':
+            check = Check.objects.get(id=check_id)
+            check.assign_all_channels()
+            doc = {"checks": [check.to_dict()]}
+            return JsonResponse(doc)
+
         q = Check.objects.filter(user=request.user)
         doc = {"checks": [check.to_dict() for check in q]}
         return JsonResponse(doc)
