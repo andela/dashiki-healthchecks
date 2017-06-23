@@ -94,12 +94,33 @@ class CreateCheckTestCase(BaseTestCase):
 
         check = Check()
         check.user = self.alice
-        check.save()
 
-        api_key = self.alice.profile.api_key
-        response = self.client.get(self.URL + "?channels=true&id={0}".format(check.id), HTTP_X_API_KEY=api_key)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(channel.checks.all()[0], check)
+        response = self.post({
+            "api_key": "abc",
+            "name": "Foo",
+            "tags": "bar,baz",
+            "timeout": 3600,
+            "grace": 60,
+            "channels": "*"
+        })
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(len(channel.checks.all()), 1)
 
     # Test for the "timeout is too small" and "timeout is too large" errors
+    def test_time_out_is_too_small(self):
+        self.post({
+            "api_key": "abc",
+            "name": "Foo",
+            "tags": "bar,baz",
+            "timeout": 59,
+            "grace": 60
+        }, expected_error="timeout is too small")
+
+    def test_time_out_is_too_large(self):
+        self.post({
+            "api_key": "abc",
+            "name": "Foo",
+            "tags": "bar,baz",
+            "timeout": 1000000,
+            "grace": 60
+        }, expected_error="timeout is too large")
