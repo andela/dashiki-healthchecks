@@ -55,22 +55,25 @@ def checks(request):
         return JsonResponse(doc)
 
     elif request.method == "POST":
-        check = Check(user=request.user)
-        check.name = str(request.json.get("name", ""))
-        check.tags = str(request.json.get("tags", ""))
-        if "timeout" in request.json:
-            check.timeout = td(seconds=request.json["timeout"])
-        if "grace" in request.json:
-            check.grace = td(seconds=request.json["grace"])
+        try:
+            check = Check(user=request.user)
+            check.name = str(request.json.get("name", ""))
+            check.tags = str(request.json.get("tags", ""))
+            if "timeout" in request.json:
+                check.timeout = td(seconds=request.json["timeout"])
+            if "grace" in request.json:
+                check.grace = td(seconds=request.json["grace"])
 
-        check.save()
+            check.save()
 
-        # This needs to be done after saving the check, because of
-        # the M2M relation between checks and channels:
-        if request.json.get("channels") == "*":
-            check.assign_all_channels()
+            # This needs to be done after saving the check, because of
+            # the M2M relation between checks and channels:
+            if request.json.get("channels") == "*":
+                check.assign_all_channels()
 
-        return JsonResponse(check.to_dict(), status=201)
+            return JsonResponse(check.to_dict(), status=201)
+        except (AttributeError, TypeError):
+            return JsonResponse({"error": "could not parse request body"}, status=400)
 
     # If request is neither GET nor POST, return "405 Method not allowed"
     return HttpResponse(status=405)
