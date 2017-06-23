@@ -70,10 +70,17 @@ class CreateCheckTestCase(BaseTestCase):
 
     def test_it_handles_invalid_json(self):
         # Make the post request with invalid json data type
+        response = self.post([{
+            'api-key': 'abc',
+            'name': "Foo",
+            "tags": "bar,baz",
+            "timeout": 3600,
+            "grace": 60
+        }], None, self.alice.profile.api_key)
+        result = json.loads(response.content)
 
-        r = {"status_code": 400, "error": "could not parse request body"}  # This is just a placeholder variable
-        self.assertEqual(r["status_code"], 400)
-        self.assertEqual(r["error"], "could not parse request body")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(result["error"], "could not parse request body")
 
     def test_it_rejects_wrong_api_key(self):
         self.post({"api_key": "wrong"},
