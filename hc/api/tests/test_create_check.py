@@ -12,7 +12,7 @@ class CreateCheckTestCase(BaseTestCase):
 
     def post(self, data, expected_error=None, api_key=None):
         if api_key:
-            response = self.client.post(self.URL, json.dumps(data), 
+            response = self.client.post(self.URL, json.dumps(data),
                                         content_type="application/json", HTTP_X_API_KEY=api_key)
         else:
             response = self.client.post(self.URL, json.dumps(data), content_type="application/json")
@@ -69,9 +69,9 @@ class CreateCheckTestCase(BaseTestCase):
         self.assertEqual(result["error"], "wrong api_key")
 
     def test_it_handles_invalid_json(self):
-        ### Make the post request with invalid json data type
+        # Make the post request with invalid json data type
 
-        r = {"status_code": 400, "error": "could not parse request body"} ### This is just a placeholder variable
+        r = {"status_code": 400, "error": "could not parse request body"}  # This is just a placeholder variable
         self.assertEqual(r["status_code"], 400)
         self.assertEqual(r["error"], "could not parse request body")
 
@@ -87,15 +87,19 @@ class CreateCheckTestCase(BaseTestCase):
         self.post({"api_key": "abc", "name": False},
                   expected_error="name is not a string")
 
-    ### Test for the assignment of channels
+    # Test for the assignment of channels
     def test_it_assigns_channels(self):
         channel = Channel(user=self.alice, kind="pushbullet", value="test-token")
         channel.save()
+
         check = Check()
         check.user = self.alice
         check.save()
-        check.assign_all_channels()
 
+        api_key = self.alice.profile.api_key
+        response = self.client.get(self.URL + "?channels=true&id={0}".format(check.id), HTTP_X_API_KEY=api_key)
+
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(channel.checks.all()[0], check)
 
-    ### Test for the "timeout is too small" and "timeout is too large" errors
+    # Test for the "timeout is too small" and "timeout is too large" errors
