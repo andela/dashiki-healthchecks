@@ -27,11 +27,14 @@ class ProfileTestCase(BaseTestCase):
         # Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
 
+<<<<<<< HEAD
 =======
 
         # Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
 >>>>>>> 2bdf7ca... [#147170291] Fix profile test case tests
+=======
+>>>>>>> 2fc7e80... [#147170291] Added test and revoke API key
         self.assertEqual(mail.outbox[0].subject, "Set password on healthchecks.io")
         self.assertTrue("link to set a password for your account"
                         " on healthchecks".lower() in mail.outbox[0].body.lower())
@@ -138,6 +141,9 @@ class ProfileTestCase(BaseTestCase):
 
     # Test it creates and revokes API key
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2fc7e80... [#147170291] Added test and revoke API key
     def test_and_revoke_API_key(self):
         self.client.login(username="alice@example.org", password="password")
         form = {"set_password": "1"}
@@ -152,5 +158,9 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.api_key = None
         self.alice.save()
         self.assertTrue(self.alice.profile.api_key is None)
+<<<<<<< HEAD
 =======
 >>>>>>> 2bdf7ca... [#147170291] Fix profile test case tests
+=======
+
+>>>>>>> 2fc7e80... [#147170291] Added test and revoke API key
