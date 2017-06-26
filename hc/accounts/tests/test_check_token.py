@@ -86,4 +86,3 @@ class CheckTokenTestCase(BaseTestCase):
 
 #         confirm dashboard
         self.assertTrue(user.email in content and 'account settings' in content and 'log out' in content)
-
