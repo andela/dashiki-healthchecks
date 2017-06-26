@@ -25,6 +25,7 @@ class ProfileTestCase(BaseTestCase):
 
         # Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
+
         self.assertEqual(mail.outbox[0].subject, "Set password on healthchecks.io")
         self.assertTrue("link to set a password for your account"
                         " on healthchecks".lower() in mail.outbox[0].body.lower())
@@ -130,3 +131,17 @@ class ProfileTestCase(BaseTestCase):
         self.assertNotContains(r, "bobs-tag.svg")
 
     # Test it creates and revokes API key
+    def test_and_revoke_API_key(self):
+        self.client.login(username="alice@example.org", password="password")
+        form = {"set_password": "1"}
+        self.client.post("/accounts/profile/", form)
+
+        self.alice.profile.refresh_from_db()
+        # set api key
+        self.alice.profile.set_api_key()
+        self.assertTrue(self.alice.profile.api_key is not None)
+
+        # revoke key
+        self.alice.profile.api_key = None
+        self.alice.save()
+        self.assertTrue(self.alice.profile.api_key is None)
