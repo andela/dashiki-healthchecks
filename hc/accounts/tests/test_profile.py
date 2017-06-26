@@ -145,4 +145,3 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.api_key = None
         self.alice.save()
         self.assertTrue(self.alice.profile.api_key is None)
-
