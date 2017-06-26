@@ -28,7 +28,6 @@ class LoginTestCase(TestCase):
         # Assert for user count increment
         self.assertEqual(final_count - initial_count, 1)
 
-
         # And email sent
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, 'Log in to healthchecks.io')
@@ -44,5 +43,17 @@ class LoginTestCase(TestCase):
         self.client.get("/accounts/login/")
         assert "bad_link" not in self.client.session
 
-        ### Any other tests?
+    # Any other tests?
+    def test_email_recipient(self):
+        check = Check()
+        check.save()
 
+        session = self.client.session
+        session["welcome_code"] = str(check.code)
+        session.save()
+
+        form = {"email": "dojo@example.org"}
+
+        self.client.post("/accounts/login/", form)
+
+        self.assertEqual(mail.outbox[0].to[0], "dojo@example.org")
