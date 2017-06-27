@@ -133,15 +133,11 @@ class ProfileTestCase(BaseTestCase):
     # Test it creates and revokes API key
     def test_and_revoke_API_key(self):
         self.client.login(username="alice@example.org", password="password")
-        form = {"set_password": "1"}
-        self.client.post("/accounts/profile/", form)
+        form = {"create_api_key": "secret-api"}
+        # Create API-KEY
+        create = self.client.post("/accounts/profile/", form)
+        assert create.status_code == 200
 
-        self.alice.profile.refresh_from_db()
-        # set api key
-        self.alice.profile.set_api_key()
-        self.assertTrue(self.alice.profile.api_key is not None)
-
-        # revoke key
-        self.alice.profile.api_key = None
-        self.alice.save()
-        self.assertTrue(self.alice.profile.api_key is None)
+        # Revoke API-KEY
+        revoke = self.client.post("/accounts/profile/", {"revoke_api_key": "secret-api"})
+        assert revoke.status_code == 200
