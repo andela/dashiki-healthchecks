@@ -10,7 +10,7 @@ $(function () {
         var remainingSeconds = Math.floor(total);
         var result = "";
         for (var i=0, unit; unit=UNITS[i]; i++) {
-            if (unit === WEEK && remainingSeconds % unit.nsecs != 0) {
+            if (unit === WEEK && remainingSeconds % unit.nsecs != 0 && remainingSeconds > 3600) {
                 // Say "8 days" instead of "1 week 1 day"
                 continue
             }
@@ -35,16 +35,17 @@ $(function () {
         start: [20],
         connect: "lower",
         range: {
-            'min': [60, 60],
-            '33%': [3600, 3600],
-            '66%': [86400, 86400],
-            '83%': [604800, 604800],
-            'max': 2592000,
+            'min': 60,
+            '20%': 1800,
+            '40%': 43200,
+            '60%': 604800,
+            '80%': (2592000 * 6),
+            'max': (2592000 * 12),
         },
         pips: {
             mode: 'values',
-            values: [60, 1800, 3600, 43200, 86400, 604800, 2592000],
-            density: 4,
+            values: [60, 3600, 86400, 2592000, (2592000 * 6), (2592000 * 12)],
+            density: 8,
             format: {
                 to: secsToText,
                 from: function() {}
@@ -64,16 +65,17 @@ $(function () {
         start: [20],
         connect: "lower",
         range: {
-            'min': [60, 60],
-            '33%': [3600, 3600],
-            '66%': [86400, 86400],
-            '83%': [604800, 604800],
-            'max': 2592000,
+            'min': 60,
+            '20%': 1800,
+            '40%': 43200,
+            '60%': 604800,
+            '80%': (2592000 * 6),
+            'max': (2592000 * 12),
         },
         pips: {
             mode: 'values',
-            values: [60, 1800, 3600, 43200, 86400, 604800, 2592000],
-            density: 4,
+            values: [60, 3600, 86400, 2592000, (2592000 * 6), (2592000 * 12)],
+            density: 8,
             format: {
                 to: secsToText,
                 from: function() {}
