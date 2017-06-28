@@ -1,5 +1,6 @@
 $(function () {
 
+    var SECONDS_IN_MONTH = 2592000;
     var MINUTE = {name: "minute", nsecs: 60};
     var HOUR = {name: "hour", nsecs: MINUTE.nsecs * 60};
     var DAY = {name: "day", nsecs: HOUR.nsecs * 24};
@@ -44,8 +45,8 @@ $(function () {
         },
         pips: {
             mode: 'values',
-            values: [60, 3600, 86400, 2592000, (2592000 * 6), (2592000 * 12)],
-            density: 8,
+            values: [60, 3600, 86400, SECONDS_IN_MONTH, (SECONDS_IN_MONTH * 6), (SECONDS_IN_MONTH * 12)],
+            density: 4,
             format: {
                 to: secsToText,
                 from: function() {}
@@ -74,8 +75,8 @@ $(function () {
         },
         pips: {
             mode: 'values',
-            values: [60, 3600, 86400, 2592000, (2592000 * 6), (2592000 * 12)],
-            density: 8,
+            values: [60, 3600, 86400, SECONDS_IN_MONTH, (SECONDS_IN_MONTH * 6), (SECONDS_IN_MONTH * 12)],
+            density: 4,
             format: {
                 to: secsToText,
                 from: function() {}
