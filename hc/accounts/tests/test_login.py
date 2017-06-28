@@ -15,7 +15,7 @@ class LoginTestCase(TestCase):
         session.save()
 
         # Get initial user count
-        initial_count = len(User.objects.all())
+        initial_count = User.objects.count()
 
         form = {"email": "alice@example.org"}
 
