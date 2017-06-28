@@ -34,6 +34,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'compressor',
     'djmail',
+    'rest_framework',
+    'django_extensions',
+    'django_filters',
 
     'hc.accounts',
     'hc.api',
@@ -51,6 +54,13 @@ MIDDLEWARE = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'hc.accounts.middleware.TeamAccessMiddleware',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend', 'rest_framework.filters.SearchFilter'),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+}
 
 AUTHENTICATION_BACKENDS = (
     'hc.accounts.backends.EmailBackend',
