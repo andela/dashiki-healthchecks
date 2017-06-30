@@ -19,6 +19,7 @@ class ProfileTestCase(BaseTestCase):
         # profile.token should be set now
         self.alice.profile.refresh_from_db()
         token = self.alice.profile.token
+
         # Assert that the token is set
         self.assertTrue(token is not None)
         self.assertTrue(len(token) > 0)
@@ -37,7 +38,7 @@ class ProfileTestCase(BaseTestCase):
         check.save()
 
         self.alice.profile.send_report()
-
+        
         # Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
         self.assertEqual(mail.outbox[len(mail.outbox) - 1].subject, "Monthly Report")
@@ -68,6 +69,7 @@ class ProfileTestCase(BaseTestCase):
                                                                     " join alice@example.org on healthchecks.io")
         self.assertTrue("alice@example.org invites you to their "
                         "healthchecks.io account" in mail.outbox[len(mail.outbox) - 1].body.lower())
+        self.assertTrue("frank@example.org" in member_emails)
 
     def test_add_team_member_checks_team_access_allowed_flag(self):
         self.client.login(username="charlie@example.org", password="password")
@@ -129,7 +131,7 @@ class ProfileTestCase(BaseTestCase):
 
         # Expect only Alice's tags
         self.assertNotContains(r, "bobs-tag.svg")
-
+        
     # Test it creates and revokes API key
     def test_and_revoke_API_key(self):
         self.client.login(username="alice@example.org", password="password")
