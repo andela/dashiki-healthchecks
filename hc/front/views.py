@@ -116,6 +116,7 @@ def docs_api(request):
 
     return render(request, "front/docs_api.html", ctx)
 
+
 def docs_help(request):
     ctx = {
         "page": "docs",
@@ -127,6 +128,7 @@ def docs_help(request):
     }
 
     return render(request, "front/docs_help.html", ctx)
+
 
 def about(request):
     return render(request, "front/about.html", {"page": "about"})

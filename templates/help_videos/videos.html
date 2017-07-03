@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!--
+ - File: front/help_videos.html
+ - Author: Collins Abitekaniza <abtcolns@gmail.com>
+ - Date: 03.07.2017
+ - Last Modified: 03.07.2017
+-->
+
+{% extends "front/base_docs.html"%}
+{% load static%}
+
+{% block title%} Help videos - healthchecks.io {% endblock%}
+
+{%block docs_content%}
+<h2>Help videos</h2>
+<div class="row-fluid">
+    {% if videos  %}
+
+    {% else %}
+    <div class="jumbotron">
+        <p style="text-align:center">It's empty in here</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
