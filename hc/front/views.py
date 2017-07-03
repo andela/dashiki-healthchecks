@@ -567,6 +567,7 @@ def privacy(request):
 def terms(request):
     return render(request, "front/terms.html", {})
 
+
 @login_required
 def docs_faq(request):
     faq_category = FaqCategory.objects.all()
