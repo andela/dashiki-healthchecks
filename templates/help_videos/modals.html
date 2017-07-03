@@ -42,3 +42,28 @@
 
   </div>
 </div>
+<script type="text/ecmascript">
+$(function(){
+    let do_upload = (let $url = "{% url 'hc-help-videos-upload'%}") =>{
+        if (window.FormData === undefined){
+            alert("This browser doesn't suppoert HTML5 form upload, please try updating")
+        }else{
+            let $formData = new FormData($("#video-upload__form")[0]);
+            $.ajax({
+                url:$url,
+                type:'POST',
+                processData:false,
+                cache:false,
+                data:$formData,
+                success:function($data){
+                }
+            });
+
+        }
+    }
+
+    $('#btn-video__upload').click(function(){
+      do_upload();  
+    });
+});
+</script>
