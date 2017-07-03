@@ -1,69 +1,80 @@
 <!DOCTYPE html>
 <!--
- - File: help_videos/modals.html
- - Author: Collins Abitekaniza <abtcolns@gmail.com>
- - Date: 03.07.2017
- - Last Modified: 03.07.2017
+    - File: help_videos/modals.html
+    - Author: Collins Abitekaniza <abtcolns@gmail.com>
+    - Date: 03.07.2017
+    - Last Modified: 03.07.2017
 -->
 
 <div id="add-video__modal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+    <div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Add video</h4>
-      </div>
-      <div class="modal-body">
-          <form id="video-upload__form" method="post" enctype="multipart/form-data" action="#">
-              <div class="row form-group">
-                <div class="col-sm-12">
-                    <input class="form-control" type="text" name="title" placeholder="Put title here"/>
-                </div>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add video</h4>
             </div>
-            <div class="row form-group">
-                <div class="col-sm-12">
->>                  <textarea class="form-control" placeholder="Description" name="description" rows="5"></textarea>
-                </div>
+            <div class="modal-body">
+                <form id="video-upload__form" method="post" enctype="multipart/form-data" action="#">
+                    {% csrf_token %}
+                    <div class="row form-group">
+                        <div class="col-sm-12">
+                            <input class="form-control" type="text" name="title" placeholder="Put title here"/>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-12">
+                              <textarea class="form-control" placeholder="Description" name="description" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-sm-12">
+                            <input type="file" name="video-file" />
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="row form-group">
-                <div class="col-sm-12">
-                    <input type="file" name="video-file" />
-                </div>
+            <div class="modal-footer">
+                <button id="btn-video__upload" type="button" class="btn btn-primary">Upload</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
-          </form>
-      </div>
-      <div class="modal-footer">
-          <button id="btn-video__upload" type="button" class="btn btn-primary">Upload</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
+        </div>
+
     </div>
-
-  </div>
 </div>
+<script
+       src="https://code.jquery.com/jquery-3.2.1.min.js"
+       integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
 <script type="text/ecmascript">
-$(function(){
-    let do_upload = (let $url = "{% url 'hc-help-videos-upload'%}") =>{
-        if (window.FormData === undefined){
-            alert("This browser doesn't suppoert HTML5 form upload, please try updating")
-        }else{
-            let $formData = new FormData($("#video-upload__form")[0]);
-            $.ajax({
-                url:$url,
-                type:'POST',
-                processData:false,
-                cache:false,
-                data:$formData,
-                success:function($data){
-                }
-            });
-
+    $(function(){
+        let do_upload = ($url = "{% url 'hc-help-videos-upload'%}") =>{
+            if (window.FormData === undefined){
+                alert("Browser doesn't support HTML5 file upload");
+             }else{
+                let $formData = new FormData($("#video-upload__form")[0]);
+                $.ajax({
+                    url:$url,
+                    type:'post',
+                    data:$formData,
+                    cache:false,
+                    contentType:false,
+                    processData:false,
+                    success:function($data){
+                        if ($data =='success'){
+                            $("#add-video__modal").modal('hide');
+                            window.location.refresh();
+                        }else{
+                            alert($data);
+                        }
+                    }
+                }); 
+             }
         }
-    }
 
-    $('#btn-video__upload').click(function(){
-      do_upload();  
+        $("#btn-video__upload").click(function(){
+            do_upload()
+        })
     });
-});
 </script>
