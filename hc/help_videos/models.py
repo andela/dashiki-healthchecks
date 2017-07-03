@@ -8,3 +8,6 @@ class Video(models.Model):
     description = models.TextField(blank=True)
     resource_url = models.CharField(max_length=300, blank=False)
     time_stamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
