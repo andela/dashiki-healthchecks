@@ -22,6 +22,13 @@
         <li {% if section == "api" %} class="active" {% endif %}>
             <a href="{% url 'hc-docs-api' %}">REST API</a>
         </li>
+        <li {% if section == "help" %} class="active" {% endif %}>
+            <a href="{% url 'hc-docs-help' %}">HELP CENTER</a>
+            <ul>
+                <li><a href="{% url 'hc-docs-help' %}#faqs">FAQ's</a></li>
+                <li><a href="{% url 'hc-docs-help' %}#videos">Help Videos</a></li>
+            </ul>
+        </li>
     </ul>
 
     </div>

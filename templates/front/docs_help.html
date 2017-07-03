@@ -1,0 +1,124 @@
+{% extends "front/base_docs.html" %}
+{% load staticfiles %}
+
+{% block title %}REST API - healthchecks.io{% endblock %}
+
+{% block docs_content %}
+
+<h2>HELP CENTER</h2>
+<p>
+Welcome to the healthchecks help center.
+</p>
+
+
+<a name="videos">
+    <h2 class="rule">Videos</h2>
+</a>
+
+<div class="api-path">GET {{ SITE_ROOT }}/api/v1/checks/</div>
+
+<p>
+    Returns a list of checks. This API call takes no parameters and returns
+    a JSON document with all checks in user's account.
+</p>
+<h3 class="api-section">Example Request</h3>
+{% include "front/snippets/list_checks_request.html" %}
+
+<h3 class="api-section">Example Response</h3>
+{% include "front/snippets/list_checks_response.html" %}
+
+<!-- ********************************************************************** /-->
+
+<a class="section" name="create-check">
+<h2 class="rule">Create a check</h2>
+</a>
+
+<div class="api-path">POST {{ SITE_ROOT }}/api/v1/checks/</div>
+
+<strong></strong>
+
+<p>
+    Creates a new check and returns its ping URL.
+    All request parameters are optional and will use their default
+    values if omitted.
+</p>
+
+<h3 class="api-section">Request Parameters</h3>
+<table class="table">
+    <tr>
+        <th>name</th>
+        <td>
+            <p>string, optional, default value: ""</p>
+            <p>Name for the new check.</p>
+        </td>
+    </tr>
+    <tr>
+        <th>tags</th>
+        <td>
+            <p>string, optional, default value: ""</p>
+            <p>A space-delimited list of tags for the new check.</p>
+        </td>
+    </tr>
+    <tr>
+        <th>timeout</th>
+        <td>
+            <p>number, optional, default value: {{ default_timeout }}.</p>
+            <p>A number of seconds, the expected period of this check.</p>
+            <p>Minimum: 60 (one minute), maximum: 604800 (one week).</p>
+        </td>
+    </tr>
+    <tr>
+        <th>grace</th>
+        <td>
+            <p>number, optional, default value: {{ default_grace }}.</p>
+            <p>A number of seconds, the grace period for this check.</p>
+            <p>Minimum: 60 (one minute), maximum: 604800 (one week).</p>
+        </td>
+    </tr>
+    <tr>
+        <th>channels</th>
+        <td>
+            <p>string, optional, default value: ""</p>
+            <p>By default, if a check is created through API, no notification
+            channels are assigned to it. So, when the check goes up or down,
+            no notifications would be sent. Set this field to a special value "*"
+            to automatically assign all existing notification channels.</p>
+        </td>
+    </tr>
+</table>
+
+<h3 class="api-section">Example Request</h3>
+{% include "front/snippets/create_check_request.html" %}
+
+<h3 class="api-section">Example Response</h3>
+{% include "front/snippets/create_check_response.html" %}
+
+
+<!-- ********************************************************************** /-->
+
+
+<a class="section" name="pause-check">
+<h2 class="rule">Pause Monitoring of a Check</h2>
+</a>
+
+<div class="api-path">POST {{ SITE_ROOT }}/api/v1/checks/&lt;uuid&gt;/pause</div>
+
+<strong></strong>
+
+<p>
+    Disables monitoring for a check, without removing it. The check goes
+    into a "paused" state. You can resume monitoring of the check by pinging
+    it.
+</p>
+<p>
+    This API call has no request parameters.
+</p>
+
+<h3 class="api-section">Example Request</h3>
+{% include "front/snippets/pause_check_request.html" %}
+
+<h3 class="api-section">Example Response</h3>
+{% include "front/snippets/pause_check_response.html" %}
+
+
+{% endblock %}
