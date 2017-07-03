@@ -15,6 +15,7 @@ from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
+from hc.front.models import (FaqCategory, FaqItem)
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm)
 
@@ -552,3 +553,20 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
+@login_required
+def faq_list(request):
+    query = FaqItem.objects.filter()
+
+    # q = Check.objects.filter(user=request.team.user).order_by("created")
+    # checks = list(q)
+    #
+    # counter = Counter()
+    # down_tags, grace_tags = set(), set()
+    # for check in checks:
+    #     status = check.get_status()
+    #     for tag in check.tags_list():
+    #         if tag == "":
+    #             continue
+    #
+    #         counter[tag] += 1
