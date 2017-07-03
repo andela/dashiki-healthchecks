@@ -6,6 +6,8 @@ from django.db import models
 class Video(models.Model):
     title = models.CharField(max_length=100, blank=False)
     description = models.TextField(blank=True)
+    title = models.CharField(max_length=200, blank=False)
+    description = models.TextField(blank=False)
     resource_url = models.CharField(max_length=300, blank=False)
     time_stamp = models.DateTimeField(auto_now_add=True)
 
