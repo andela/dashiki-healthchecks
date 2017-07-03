@@ -6,7 +6,7 @@
     <div class="col-sm-2">
 
     <ul class="docs-nav">
-        <li {% if section == "home" %} class="active" {% endif %}>
+        <li {% if section=="home" %} class="active" {% endif %}>
             <a href="{% url 'hc-docs' %}">Executing a Ping</a>
             <ul>
                 <li><a href="{% url 'hc-docs' %}#crontab">Crontab</a></li>
@@ -19,11 +19,15 @@
                 <li><a href="{% url 'hc-docs' %}#email">Email</a></li>
             </ul>
         </li>
-        <li {% if section == "api" %} class="active" {% endif %}>
+        <li {% if section=="api" %} class="active" {% endif %}>
             <a href="{% url 'hc-docs-api' %}">REST API</a>
         </li>
-        <li {% if section == "help-videos" %} class="active" {% endif%}>
-            <a href="{% url 'hc-help-videos' %}">HELP VIDEOS</a>
+        <li {% if section=="help" %} class="active" {% endif %}>
+            <a href="{% url 'hc-docs-help' %}">HELP CENTER</a>
+            <ul>
+                <li><a href="{% url 'hc-docs-help' %}#faqs">FAQ's</a></li>
+                <li><a href="{% url 'hc-docs-help' %}#videos">Help Videos</a></li>
+            </ul>
         </li>
     </ul>
 
