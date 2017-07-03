@@ -40,6 +40,46 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+          <button id="btn-video__upload" type="button" class="btn btn-primary">Upload</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+</div>
+<script
+       src="https://code.jquery.com/jquery-3.2.1.min.js"
+       integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script type="text/ecmascript">
+    $(function(){
+        let do_upload = ($url = "{% url 'hc-help-videos-upload'%}") =>{
+            if (window.FormData === undefined){
+                alert("Browser doesn't support HTML5 file upload");
+             }else{
+                let $formData = new FormData($("#video-upload__form")[0]);
+                $.ajax({
+                    url:$url,
+                    type:'post',
+                    data:$formData,
+                    cache:false,
+                    contentType:false,
+                    processData:false,
+                    success:function($data){
+                        if ($data =='success'){
+                            $("#add-video__modal").modal('hide');
+                            window.location.reload();
+                        }else{
+                            alert($data);
+                        }
+                    },
+                   error:function(err){
+                        alert("Failed");
+                   }
+                }); 
+             }
+        }
 
     </div>
 </div>
