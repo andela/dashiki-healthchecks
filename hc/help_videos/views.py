@@ -8,3 +8,9 @@ def index(request):
         'section': "help-videos"
     }
     return render(request, 'help_videos/videos.html', ctx)
+
+
+def upload(request):
+    if request.method == 'POST':
+        pass
+    pass
