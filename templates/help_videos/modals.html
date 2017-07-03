@@ -25,7 +25,7 @@
                     </div>
                     <div class="row form-group">
                         <div class="col-sm-12">
-                              <textarea class="form-control" placeholder="Description" name="description" rows="5"></textarea>
+                            <textarea class="form-control" placeholder="Description" name="description" rows="5"></textarea>
                         </div>
                     </div>
                     <div class="row form-group">
@@ -39,9 +39,7 @@
                 <button id="btn-video__upload" type="button" class="btn btn-primary">Upload</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
-<<<<<<< HEAD
         </div>
-=======
           </form>
       </div>
       <div class="modal-footer">
@@ -53,9 +51,9 @@
 <script
        src="https://code.jquery.com/jquery-3.2.1.min.js"
        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous"></script>
+       crossorigin="anonymous"></script>
 <script type="text/ecmascript">
-    $(function(){
+$(function(){
         let do_upload = ($url = "{% url 'hc-help-videos-upload'%}") =>{
             if (window.FormData === undefined){
                 alert("Browser doesn't support HTML5 file upload");
@@ -82,8 +80,6 @@
                 });
              }
         }
->>>>>>> [#147170309] Fix empty form submit, add spacing between media content
-
     </div>
 </div>
 <script
@@ -120,4 +116,8 @@
             do_upload()
         })
     });
+        $('#btn-video__upload').click(function(){
+            do_upload();
+       })
+      });
 </script>

@@ -9,7 +9,8 @@ from django.contrib.auth.decorators import login_required
 
 def index(request):
     ctx = {
-        'section': "help-videos"
+        'section': "help-videos",
+        'videos': Video.objects.all()
     }
     return render(request, 'help_videos/videos.html', ctx)
 
