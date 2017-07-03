@@ -14,7 +14,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
-
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, PRIORITY_LEVELS, Channel, Check, Ping, Priority
 from hc.front.models import (FaqCategory, FaqItem)
@@ -620,6 +619,7 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
 
 @login_required
 def docs_faq(request):
