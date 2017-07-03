@@ -1,0 +1,21 @@
+{% extends "front/base_docs.html" %}
+{% load staticfiles %}
+
+{% block title %}REST API - healthchecks.io{% endblock %}
+
+{% block docs_content %}
+
+<h2><b>FAQ's</b></h2>
+
+{% for category, faq_list in faqs.items %}
+  <h3>{{ category }}</h3><hr/>
+  {% for faq in faq_list %}
+  <h4>
+    {{ faq.title }}
+  </h4>
+  <p class="text-justify jumbotron">
+    {{ faq.body }}
+  </p>
+  {% endfor %}
+{% endfor %}
+{% endblock %}

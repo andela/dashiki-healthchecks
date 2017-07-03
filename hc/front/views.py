@@ -616,3 +616,18 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
+@login_required
+def docs_faq(request):
+    faq_category = FaqCategory.objects.all()
+    result = {}
+    for category in faq_category:
+        faq_list = list(FaqItem.objects.filter(category=category))
+        result[category] = faq_list
+
+    ctx = {
+        "page": "docs_faq",
+        "faqs": result
+    }
+
+    return render(request, "front/docs_faq.html", ctx)
