@@ -16,23 +16,26 @@
         <h4 class="modal-title">Add video</h4>
       </div>
       <div class="modal-body">
-          <div class="row form-group">
-              <div class="col-sm-12">
-                  <input class="form-control" type="text" placeholder="Put title here"/>
-              </div>
-          </div>
-          <div class="row form-group">
-              <div class="col-sm-12">
-                  <textarea class="form-control" placeholder="Description" rows="5"></textarea>
-              </div>
-          </div>
-          <div class="row form-group">
-              <div class="col-sm-12">
-                  <input type="file" />
-              </div>
-          </div>
+          <form id="video-upload__form" method="post" enctype="multipart/form-data" action="#">
+              <div class="row form-group">
+                <div class="col-sm-12">
+                    <input class="form-control" type="text" name="title" placeholder="Put title here"/>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-12">
+>>                  <textarea class="form-control" placeholder="Description" name="description" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <input type="file" name="video-file" />
+                </div>
+            </div>
+          </form>
       </div>
       <div class="modal-footer">
+          <button id="btn-video__upload" type="button" class="btn btn-primary">Upload</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>
