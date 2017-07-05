@@ -30,8 +30,8 @@
           </div>
           {% if request.user.is_superuser %}
             <div class="faq-well">
-              <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">Delete</a>
-              <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">Edit</a>
+                <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">Delete</a>
+                <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">Edit</a>
             </div>
           {% endif %}
         </div>
@@ -56,12 +56,8 @@
           $parent.html($data);
           CKEDITOR.config.width="100%";
           CKEDITOR.config.toolbar = [
-   ['Styles','Format','Font','FontSize'],
-   '/',
-   ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace','-','Outdent','Indent','-','Print'],
-   '/',
-   ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-   ['Image','Table','-','Link','Flash','Smiley','TextColor','BGColor','Source']
+   ['Styles','Format','Font','FontSize','Bold','Italic','Underline','StrikeThrough','-','Undo','Redo',
+   'NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 ] ;
           CKEDITOR.replace("id_body",{
             width:['820px']
