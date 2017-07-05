@@ -46,9 +46,8 @@ class AddWebhookForm(forms.Form):
 
 
 class AddFaqForm(forms.ModelForm):
-
     body = forms.CharField(widget=CKEditorWidget())
+
     class Meta:
         model = FaqItem
         fields = ['category', 'title', 'body']
-
