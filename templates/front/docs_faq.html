@@ -7,7 +7,13 @@
 
 {% block docs_content %}
 
-<h2><b>FAQ's</b></h2>
+<h2>
+  <b>FAQ's</b>
+  {% if request.user.is_superuser %}
+    <a href='#' class="btn btn-sm btn-info pull-right"> Create FAQ &nbsp;<span class = "badge"> &#43;</span></a>
+  {% endif %}
+</h2>
+
 <div class="panel-group wrap" id="accordion" role="tablist" aria-multiselectable="true">
 {% for category, faq_list in faqs.items %}
   <h4>{{ category }}</h4><hr/>
