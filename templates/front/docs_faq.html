@@ -1,6 +1,7 @@
 {% extends "front/base_docs.html" %}
 {% load static %}
 <<<<<<< HEAD
+<<<<<<< HEAD
 {% load fontawesome %}
 {% fontawesome_stylesheet %}
 {% block title %} Healthchecks FAQ's {% endblock %}
@@ -8,6 +9,11 @@
 
 {% block title %}Healthchecks FAQ's{% endblock %}
 >>>>>>> [#147170309] Add delete and edit functionality
+=======
+{% load fontawesome %}
+{% fontawesome_stylesheet %}
+{% block title %} Healthchecks FAQ's {% endblock %}
+>>>>>>> [#147170309] Add font awesome icons
 
 {% block docs_content %}
 <h2>
@@ -37,6 +43,7 @@
             <div class="faq-well">
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">{% fontawesome_icon 'remove' %}</a>
                 <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">{% fontawesome_icon 'pencil' %}</a>
 =======
@@ -47,6 +54,10 @@
                 <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">Delete</a>
                 <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">Edit</a>
 >>>>>>> [#147170309] Edit CKEditor toolbar
+=======
+                <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">{% fontawesome_icon 'remove' %}</a>
+                <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">{% fontawesome_icon 'pencil' %}</a>
+>>>>>>> [#147170309] Add font awesome icons
             </div>
           {% endif %}
         </div>
