@@ -42,12 +42,55 @@
         </div>
     </div>
 </div>
+
+<div id="delete-video__modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <form action="#" class="modal-content" method="post" id="delete-video__form">
+            {% csrf_token %}
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Delete video</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this video ?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-video__delete" type="button" class="btn btn-danger">Delete</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
 <script
-       src="https://code.jquery.com/jquery-3.2.1.min.js"
-       integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-       crossorigin="anonymous"></script>
+          src="https://code.jquery.com/jquery-3.2.1.min.js"
+          integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+          crossorigin="anonymous"></script>
+
 <script type="text/ecmascript">
 $(function(){
+        let delete_video = ($url = "{% url 'hc-delete-video' %}") => {
+            let $data_id = $("#delete-video__modal").attr("data-id");
+            if ($data_id){
+                let $formData = $("#delete-video__form").serialize() + '&id='.concat($data_id);
+
+                $.ajax({
+                    url: $url,
+                    type: 'POST',
+                    data: $formData,
+                    success:function($data){
+                        if ($data == 'success'){
+                            $('#delete-video__modal').modal('hide');
+                            window.location.reload();
+                        }else{
+                            alert($data);
+                        }
+                    },
+                    error:function(err){
+                        alert("falied");
+                    }
+                })
+            }
+        }
         let do_upload = ($url = "{% url 'hc-help-videos-upload'%}") =>{
             if (window.FormData === undefined){
                 alert("Browser doesn't support HTML5 file upload");
@@ -74,9 +117,12 @@ $(function(){
                 }); 
              }
         }
-        
+
         $('#btn-video__upload').click(function(){
             do_upload();
+       });
+       $('#btn-video__delete').click(function(){
+            delete_video();
        })
       });
 </script>
