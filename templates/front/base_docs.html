@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-
+{% block extrahead %}
+<script>window.CKEDITOR_BASEPATH = '/static-collected/ckeditor/ckeditor/';</script>
+{{ block.super }}
+{% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-sm-2">

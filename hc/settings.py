@@ -42,7 +42,9 @@ INSTALLED_APPS = (
     'hc.api',
     'hc.front',
     'hc.payments',
-    'hc.help_videos'
+    'hc.help_videos',
+    'crispy_forms',
+    'ckeditor'
 )
 
 MIDDLEWARE = (
