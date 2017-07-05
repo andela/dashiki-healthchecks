@@ -66,3 +66,25 @@ panel {
 .width870 {
     width: 870px;
 }
+
+.btn-danger {
+    color: #ffffff;
+    background-color: #696969;
+    border-color: #54504e;
+}
+
+.btn-danger:hover {
+    background-color: #504e4e;
+    border-color: #0a0a0a;
+}
+
+.btn-primary {
+    color: #ffffff;
+    background-color: #20b2bb;
+    border-color: #16838a;
+}
+
+.btn-primary:hover {
+    background-color: #157d84;
+    border-color: #0a565a;
+}
