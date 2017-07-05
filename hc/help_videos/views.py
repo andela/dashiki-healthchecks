@@ -27,8 +27,21 @@ def admin_required(func):
     return wrap
 
 
+def verify_filetype(func):
+    def wrap(request):
+        file_name = request.FILES["video-file"].name
+        ext = file_name.split(".")[-1]
+        if ext == 'mp4':
+            return func(request)
+        else:
+            return HttpResponse("Only mp4 video files allowed at the moment, .{} file types not allowed".format(ext))
+
+    return wrap
+
+
 @login_required
 @admin_required
+@verify_filetype
 def upload(request):
     if request.method == 'POST':
         title, desc = request.POST['title'], request.POST['description']
