@@ -62,3 +62,7 @@ panel {
     padding: 10px;
     box-shadow: inset 1px 1px 10px #dcd9d9;
 }
+
+.width870 {
+    width: 870px;
+}
