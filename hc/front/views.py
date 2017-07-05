@@ -584,6 +584,7 @@ def docs_faq(request):
 
     return render(request, "front/docs_faq.html", ctx)
 
+
 @login_required
 def save_faq(request):
     form = AddFaqForm(data=request.POST)

@@ -27,7 +27,7 @@
         </div>
         <div id="collapse{{ faq.id }}" class="panel-collapse collapse" role="tabpanel">
           <div class="panel-body text-justify">
-             {{ faq.body }}
+             {{ faq.body | safe }}
           </div>
           {% if request.user.is_superuser %}
             <div class="faq-well">
