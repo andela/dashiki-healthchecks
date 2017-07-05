@@ -60,6 +60,17 @@ def my_checks(request):
     return render(request, "front/my_checks.html", ctx)
 
 
+@login_required
+def failed_checks(request):
+    query = Check.objects.filter(user=request.team.user).order_by("created")
+    checks = list(filter(lambda check: check.get_status() == 'down', list(query)))
+    ctx = {
+        "page": "failed_checks",
+        "checks": checks
+    }
+    return render(request, "front/my_checks.html", ctx)
+
+
 def _welcome_check(request):
     check = None
     if "welcome_code" in request.session:
