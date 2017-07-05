@@ -1,7 +1,9 @@
 {% extends "front/base_docs.html" %}
 {% load staticfiles %}
+{% include "front/faq_create_edit.html" %}
+{% include "help_videos/modals.html" %}
 
-{% block title %}REST API - healthchecks.io{% endblock %}
+{% block title %}Healthchecks FAQ's{% endblock %}
 
 {% block docs_content %}
 
@@ -22,9 +24,35 @@
           <div class="panel-body text-justify">
              {{ faq.body }}
           </div>
+          {% if request.user.is_superuser %}
+            <div class="faq-well">
+              <a href="#" data-toggle="modal" data-target="#add-video__modal" class="btn btn-small btn-danger">Delete</a>
+              <a href="#" data-toggle="modal" data-target="#add-faq" class="btn btn-small btn-primary">Edit</a>
+            </div>
+          {% endif %}
         </div>
       </div>
   {% endfor %}
 {% endfor %}
   </div>
+
+<!-- Modal -->
+<div id="add-faq" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create Edit FAQ</h4>
+      </div>
+      <div class="modal-body">
+        {{ form }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 {% endblock %}

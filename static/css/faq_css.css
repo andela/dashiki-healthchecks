@@ -56,3 +56,9 @@ panel {
   border-radius: 0;
   transition: border-radius linear 0s;
 }
+
+.faq-well {
+    background-color: #f7f7f7;
+    padding: 10px;
+    box-shadow: inset 1px 1px 10px #dcd9d9;
+}

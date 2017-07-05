@@ -99,15 +99,9 @@ DATABASES['default'] = db_from_env
 # Default database engine is SQLite. So one can just check out code,
 # install requirements.txt and do manage.py runserver and it works
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': './hc.sqlite',
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dashiki_hc',
-        'USER': 'postgres',
-        'TEST': {'CHARSET': 'UTF8'}
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': './hc.sqlite',
     }
 }
 
@@ -176,7 +170,7 @@ PUSHOVER_EMERGENCY_EXPIRATION = 86400
 PUSHBULLET_CLIENT_ID = None
 PUSHBULLET_CLIENT_SECRET = None
 
-#setup media upload path
+# setup media upload path
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
