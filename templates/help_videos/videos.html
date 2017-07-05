@@ -21,6 +21,11 @@
             <video height="240" controls style="margin:4px; width:100%">
                 <source src="{{video.resource_url}}" type="video/mp4">
             </video>
+            {% if request.user.is_superuser %}
+            <div class="row-fluid" style="text-align:center" >
+                <a data-id="{{video.id}}" href="#" data-toggle="modal" data-target="#delete-video__modal" class="text-danger btn-trigger__delete-modal">Delete</a>
+            </div>
+            {% endif %}
         </div>
         {% endfor %}
         {% if request.user.is_superuser %}
@@ -28,6 +33,14 @@
         <div class="col-sm-2 col-md-4" style="text-align:center;">
             <a href="#" data-toggle="modal" data-target="#add-video__modal">Add more</a>
         </div>
+        <script>
+            $(function(){
+                $('.btn-trigger__delete-modal').click(function(){
+                    $("#delete-video__modal").attr('data-id',$(this).attr('data-id'));
+                });
+            })
+        </script>
+
         {% endif %}
 
     {% else %}
