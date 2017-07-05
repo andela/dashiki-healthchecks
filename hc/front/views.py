@@ -15,7 +15,6 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
 from django.http import HttpResponse
-from django.http import HttpResponseForbidden
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, PRIORITY_LEVELS, Channel, Check, Ping, Priority
 from hc.front.models import (FaqCategory, FaqItem)
@@ -661,6 +660,8 @@ def faq_edit(request, id):
     }
     return render(request, "front/edit_faq.html", ctx)
 
+
+@login_required
 def delete_faq(request, id):
     if request.method == 'GET':
         if id:
