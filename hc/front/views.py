@@ -18,7 +18,7 @@ from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, PRIORITY_LEVELS, Channel, Check, Ping, Priority
 from hc.front.models import (FaqCategory, FaqItem)
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
+                            TimeoutForm, AddFaqForm)
 
 
 # from itertools recipes:
@@ -624,13 +624,23 @@ def terms(request):
 def docs_faq(request):
     faq_category = FaqCategory.objects.all()
     result = {}
+    form = AddFaqForm()
     for category in faq_category:
         faq_list = list(FaqItem.objects.filter(category=category))
         result[category] = faq_list
 
     ctx = {
         "page": "docs_faq",
-        "faqs": result
+        "faqs": result,
+        "form": form
     }
 
     return render(request, "front/docs_faq.html", ctx)
+
+@login_required
+def save_faq(request):
+    form = AddFaqForm(data=request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+    return redirect("hc-docs-faq")
