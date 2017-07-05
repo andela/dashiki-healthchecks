@@ -1,6 +1,5 @@
-{% load crispy_forms_tags %}
 <div id="add-faq" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+  <div class="modal-dialog width870">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -9,7 +8,8 @@
       <div class="modal-body">
         <form action="{% url 'hc-save-faq' %}" method="post">
         {% csrf_token %}
-        {{ form | crispy }}
+        {{ form.media }}
+        {{ form.as_p }}
         <input type="submit" class="btn btn-sm btn-info" value="Save"/>
         </form>
       </div>

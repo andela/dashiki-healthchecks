@@ -44,8 +44,10 @@ class AddWebhookForm(forms.Form):
     def get_value(self):
         return "{value_down}\n{value_up}".format(**self.cleaned_data)
 
+
 class AddFaqForm(forms.ModelForm):
+
     body = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = FaqItem
-        fields = ['category','title','body']
+        fields = ['category', 'title', 'body']
