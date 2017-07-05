@@ -36,12 +36,17 @@
           {% if request.user.is_superuser %}
             <div class="faq-well">
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">{% fontawesome_icon 'remove' %}</a>
                 <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">{% fontawesome_icon 'pencil' %}</a>
 =======
               <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">Delete</a>
               <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">Edit</a>
 >>>>>>> [#147170309] Add delete and edit functionality
+=======
+                <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">Delete</a>
+                <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">Edit</a>
+>>>>>>> [#147170309] Edit CKEditor toolbar
             </div>
           {% endif %}
         </div>
@@ -67,6 +72,7 @@
           CKEDITOR.config.width="100%";
           CKEDITOR.config.toolbar = [
 <<<<<<< HEAD
+<<<<<<< HEAD
    ['Styles','Format','Font','FontSize','Bold','Italic','Underline','StrikeThrough','-','Undo','Redo',
    'NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 =======
@@ -77,6 +83,10 @@
    ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
    ['Image','Table','-','Link','Flash','Smiley','TextColor','BGColor','Source']
 >>>>>>> [#147170309] Add delete and edit functionality
+=======
+   ['Styles','Format','Font','FontSize','Bold','Italic','Underline','StrikeThrough','-','Undo','Redo',
+   'NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+>>>>>>> [#147170309] Edit CKEditor toolbar
 ] ;
           CKEDITOR.replace("id_body",{
             width:['820px']
