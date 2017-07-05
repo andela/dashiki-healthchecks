@@ -14,6 +14,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
+from django.http import HttpResponse
+from django.http import HttpResponseForbidden
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, PRIORITY_LEVELS, Channel, Check, Ping, Priority
 from hc.front.models import (FaqCategory, FaqItem)
@@ -635,9 +637,34 @@ def docs_faq(request):
 
 
 @login_required
-def save_faq(request):
-    form = AddFaqForm(data=request.POST)
+def save_faq(request, id=None):
     if request.method == 'POST':
+        if id:
+            faq = FaqItem.objects.get(pk=id)
+            form = AddFaqForm(data=request.POST, instance=faq)
+        else:
+            form = AddFaqForm(data=request.POST)
         if form.is_valid():
             form.save()
     return redirect("hc-docs-faq")
+
+
+@login_required
+def faq_edit(request, id):
+    faq = FaqItem.objects.get(pk=id)
+    form = AddFaqForm(instance=faq)
+    ctx = {
+        "page": "faq_edit",
+        "edit": True,
+        "faq_id": faq.id,
+        "form": form
+    }
+    return render(request, "front/edit_faq.html", ctx)
+
+def delete_faq(request, id):
+    if request.method == 'GET':
+        if id:
+            FaqItem.objects.filter(pk=id).delete()
+            return redirect("hc-docs-faq")
+        else:
+            return HttpResponse("Operation not allowed")

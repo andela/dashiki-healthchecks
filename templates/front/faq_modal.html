@@ -1,3 +1,20 @@
+<div id="edit-faq__modal" class="modal fade" role="dialog">
+  <div class="modal-dialog width870">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit FAQ</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <!--<div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+
 <div id="add-faq" class="modal fade" role="dialog">
   <div class="modal-dialog width870">
     <div class="modal-content">
@@ -6,16 +23,16 @@
         <h4 class="modal-title">Create Edit FAQ</h4>
       </div>
       <div class="modal-body">
-        <form action="{% url 'hc-save-faq' %}" method="post">
+        <form action="{% if edit %}{% url 'hc-save-faq-edit' id=faq_id %} {% else %} {% url 'hc-save-faq' %} {% endif %}" method="post">
         {% csrf_token %}
         {{ form.media }}
         {{ form.as_p }}
         <input type="submit" class="btn btn-sm btn-info" value="Save"/>
         </form>
       </div>
-      <div class="modal-footer">
+      <!--<div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
+      </div>-->
     </div>
   </div>
 </div>
