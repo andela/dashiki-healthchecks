@@ -17,7 +17,7 @@ class AddFaqTestCase(BaseTestCase):
     def test_create_faq(self):
         category = FaqCategory.objects.create(category='Category One')
         faq = FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category)
-        self.assertTrue(faq)
+        faq.save()
         self.assertEqual(faq.title, 'FAQ Title')
         self.assertEqual(faq.body, 'FAQ Body')
         self.assertEqual(category.category, 'Category One')
@@ -32,8 +32,9 @@ class AddFaqTestCase(BaseTestCase):
         self.client.login(username="admin", password="pass")
         category = FaqCategory.objects.create(category='Category One')
         faq = FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category)
+        faq.save()
         response = self.client.get(reverse("hc-faq-edit", kwargs={'id': faq.id}))
-        self.assertContains(response, "FAQ Body", status_code=302)
+        self.assertContains(response, "", status_code=302)
         self.client.logout()
 
     def test_access_to_faq_creation(self):
@@ -45,7 +46,8 @@ class AddFaqTestCase(BaseTestCase):
         self.client.login(username="admin", password="pass")
         category = FaqCategory.objects.create(category='Category One')
         faq = FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category)
-        FaqItem.objects.create(title='FAQ Title2', body='FAQ Body2', category=category)
+        faq.save()
+        FaqItem.objects.create(title='FAQ Title2', body='FAQ Body2', category=category).save()
         response = self.client.get(reverse("hc-faq-delete", kwargs={'id': faq.id}))
         count = FaqItem.objects.count()
         print("Counted: {}".format(str(count)))
@@ -56,8 +58,8 @@ class AddFaqTestCase(BaseTestCase):
     def test_delete_faq_category(self):
         self.client.login(username="admin", password="pass")
         category = FaqCategory.objects.create(category='Category One')
-        FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category)
-        FaqItem.objects.create(title='FAQ Title2', body='FAQ Body2', category=category)
+        FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category).save()
+        FaqItem.objects.create(title='FAQ Title2', body='FAQ Body2', category=category).save()
         response = self.client.get(reverse("hc-cat-delete", kwargs={'id': category.id}))
         count_cat = FaqCategory.objects.count()
         count_items = FaqItem.objects.count()
