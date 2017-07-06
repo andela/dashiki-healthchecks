@@ -16,5 +16,5 @@ class FaqItem(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(FaqCategory, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return "{} -> {}".format(self.category, self.title)
