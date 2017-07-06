@@ -4,6 +4,8 @@ from .models import Video
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
+import os
+from hc.settings import BASE_DIR
 
 # Create your views here.
 
@@ -31,6 +33,7 @@ def verify_filetype(func):
     def wrap(request):
         file_name = request.FILES["video-file"].name
         ext = file_name.split(".")[-1]
+        # can check for more extensions here
         if ext == 'mp4':
             return func(request)
         else:
@@ -68,7 +71,10 @@ def delete_video(request):
     if request.method == 'POST':
         request_id = request.POST['id']
         if request_id:
+            obj = Video.objects.filter(id=request_id).first()
+            # do a hard delete
+            os.system("rm -r {}".format("{}{}".format(BASE_DIR, obj.resource_url).replace("%20", "\ ")))
             Video.objects.filter(id=request_id).delete()
-            return HttpResponse("success")
+            return HttpResponse("success".format(BASE_DIR))
         else:
             return HttpResponse("Operation not allowed")
