@@ -1,6 +1,6 @@
 from django import forms
 from hc.api.models import Channel
-from hc.front.models import FaqItem
+from hc.front.models import FaqItem, FaqCategory
 from ckeditor.widgets import CKEditorWidget
 
 
@@ -51,3 +51,10 @@ class AddFaqForm(forms.ModelForm):
     class Meta:
         model = FaqItem
         fields = ['category', 'title', 'body']
+
+
+class AddFaqCategoryForm(forms.ModelForm):
+
+    class Meta:
+        model = FaqCategory
+        fields = ['category']
