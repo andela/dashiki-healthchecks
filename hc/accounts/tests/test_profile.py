@@ -19,10 +19,10 @@ class ProfileTestCase(BaseTestCase):
         # profile.token should be set now
         self.alice.profile.refresh_from_db()
         token = self.alice.profile.token
+
         # Assert that the token is set
         self.assertTrue(token is not None)
         self.assertTrue(len(token) > 0)
-
         # Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
 
@@ -37,7 +37,7 @@ class ProfileTestCase(BaseTestCase):
         check.save()
 
         self.alice.profile.send_report()
-
+        
         # Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
         self.assertEqual(mail.outbox[len(mail.outbox) - 1].subject, "Monthly Report")
@@ -129,6 +129,13 @@ class ProfileTestCase(BaseTestCase):
 
         # Expect only Alice's tags
         self.assertNotContains(r, "bobs-tag.svg")
+        
+    # Test it creates and revokes API key
+    def test_and_revoke_API_key(self):
+        self.client.login(username="alice@example.org", password="password")
+        form = {"set_password": "1"}
+        self.client.post("/accounts/profile/", form)
+
 
     # Test it creates and revokes API key
     def test_and_revoke_API_key(self):
@@ -141,3 +148,4 @@ class ProfileTestCase(BaseTestCase):
         # Revoke API-KEY
         revoke = self.client.post("/accounts/profile/", {"revoke_api_key": "secret-api"})
         assert revoke.status_code == 200
+
