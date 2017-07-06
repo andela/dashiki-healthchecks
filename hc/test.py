@@ -43,5 +43,5 @@ class BaseTestCase(TestCase):
         # Create a Super admin user to test creation of FAQs
         self.superuser = User(username="admin", email="admin@test.com")
         self.superuser.set_password("pass")
-        self.superuser.save()
         self.superuser.is_superuser = True
+        self.superuser.save()
