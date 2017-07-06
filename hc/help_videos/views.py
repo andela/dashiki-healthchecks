@@ -33,6 +33,7 @@ def verify_filetype(func):
     def wrap(request):
         file_name = request.FILES["video-file"].name
         ext = file_name.split(".")[-1]
+        # can check for more extensions here
         if ext == 'mp4':
             return func(request)
         else:
