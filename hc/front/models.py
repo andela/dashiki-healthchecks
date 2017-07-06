@@ -14,5 +14,5 @@ class FaqItem(models.Model):
     body = models.TextField(max_length=2000, blank=False)
     category = models.ForeignKey(FaqCategory, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return "{} -> {}".format(self.category, self.title)
