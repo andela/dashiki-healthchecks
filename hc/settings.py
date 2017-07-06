@@ -44,7 +44,8 @@ INSTALLED_APPS = (
     'hc.payments',
     'hc.help_videos',
     'crispy_forms',
-    'ckeditor'
+    'ckeditor',
+    'fontawesome'
 )
 
 MIDDLEWARE = (
