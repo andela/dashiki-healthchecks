@@ -1,6 +1,5 @@
- <form action="{% if edit %}{% url 'hc-save-faq-edit' id=faq_id %} {% else %} {% url 'hc-save-faq' %} {% endif %}" method="post">
+<form action="{% if edit %}{% url 'hc-save-cat-edit' id=cat_id %} {% else %} {% url 'hc-save-cat' %} {% endif %}" method="post">
         {% csrf_token %}
-        {{ form.media }}
         {{ form.as_p }}
         <input type="submit" class="btn btn-sm btn-info" value="Save"/>
 </form>
