@@ -12,6 +12,7 @@ class AddFaqTestCase(BaseTestCase):
         self.assertTrue(form.is_valid())
         result = form.save()
         self.assertEqual(result.category, "Category One")
+        self.client.logout()
 
     def test_create_faq(self):
         category = FaqCategory.objects.create(category='Category One')
@@ -33,6 +34,7 @@ class AddFaqTestCase(BaseTestCase):
         faq = FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category)
         response = self.client.get(reverse("hc-faq-edit", kwargs={'id': faq.id}))
         self.assertContains(response, "FAQ Body", status_code=200)
+        self.client.logout()
 
     def test_access_to_faq_creation(self):
         response = self.client.get(reverse("hc-save-faq"))
@@ -48,6 +50,7 @@ class AddFaqTestCase(BaseTestCase):
         count = FaqItem.objects.count()
         self.assertContains(response, "", status_code=302)
         self.assertEqual(count, 1)
+        self.client.logout()
 
     def test_delete_faq_category(self):
         self.client.login(username="admin", password="pass")
@@ -57,7 +60,7 @@ class AddFaqTestCase(BaseTestCase):
         response = self.client.get(reverse("hc-cat-delete", kwargs={'id': category.id}))
         count_cat = FaqCategory.objects.count()
         count_items = FaqItem.objects.count()
-        print("Cat: " + str(count_cat) + " Items: " + str(count_items))
         self.assertContains(response, "", status_code=302)
         self.assertEqual(count_cat, 0)
         self.assertEqual(count_items, 0)
+        self.client.logout()
