@@ -59,6 +59,7 @@ panel {
 
 .faq-well {
     padding: 10px;
+    height: 50px;
 }
 
 .width870 {
@@ -85,4 +86,16 @@ panel {
 .btn-primary:hover {
     background-color: #157d84;
     border-color: #0a565a;
+}
+
+.btn-primary:focus, .btn-primary.focus {
+    color: #ffffff;
+    background-color: #157d84;
+    border-color: #0a565a;
+}
+
+.btn-danger:focus, .btn-danger.focus {
+    color: #ffffff;
+    background-color: #504e4e;
+    border-color: #0a0a0a;
 }
