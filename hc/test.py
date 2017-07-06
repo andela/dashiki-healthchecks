@@ -39,3 +39,8 @@ class BaseTestCase(TestCase):
         self.charlie_profile = Profile(user=self.charlie, api_key='def')
         self.charlie_profile.team_access_allowed = False
         self.charlie_profile.save()
+
+        # Create a Super admin user to test creation of FAQs
+        self.superuser = User.objects.create_superuser('admin', 'admin@test.com', 'pass')
+
+        # Create sample category
