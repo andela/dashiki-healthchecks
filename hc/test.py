@@ -41,6 +41,7 @@ class BaseTestCase(TestCase):
         self.charlie_profile.save()
 
         # Create a Super admin user to test creation of FAQs
-        self.superuser = User.objects.create_superuser('admin', 'admin@test.com', 'pass')
-
-        # Create sample category
+        self.superuser = User(username="admin", email="admin@test.com")
+        self.superuser.set_password("pass")
+        self.superuser.save()
+        self.superuser.is_superuser = True
