@@ -7,7 +7,7 @@ from django.urls import reverse
 class AddFaqTestCase(BaseTestCase):
 
     def test_create_faq_cat(self):
-        self.client.login(username="admin", password="pass")
+        self.client.login(username="admin@test.com", password="pass")
         form = AddFaqCategoryForm({'category': 'Category One'})
         self.assertTrue(form.is_valid())
         result = form.save()
@@ -29,7 +29,7 @@ class AddFaqTestCase(BaseTestCase):
         self.assertFalse(faq_item_form.is_valid())
 
     def test_edit_faq(self):
-        self.client.login(username="admin", password="pass")
+        self.client.login(username="admin@test.com", password="pass")
         category = FaqCategory.objects.create(category='Category One')
         faq = FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category)
         faq.save()
@@ -43,27 +43,27 @@ class AddFaqTestCase(BaseTestCase):
         self.assertIn("/accounts/login/", response.url)
 
     def test_delete_faq(self):
-        self.client.login(username="admin", password="pass")
+        self.client.login(username="admin@test.com", password="pass")
         category = FaqCategory.objects.create(category='Category One')
         faq = FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category)
         faq.save()
         FaqItem.objects.create(title='FAQ Title2', body='FAQ Body2', category=category).save()
         response = self.client.get(reverse("hc-faq-delete", kwargs={'id': faq.id}))
         count = FaqItem.objects.count()
-        print("Counted: {}".format(str(count)))
+        print("Counted: {}, Response {}".format(str(count), str(response)))
         self.assertContains(response, "", status_code=302)
         # self.assertEqual(count, 1)
         self.client.logout()
 
     def test_delete_faq_category(self):
-        self.client.login(username="admin", password="pass")
+        self.client.login(username="admin@test.com", password="pass")
         category = FaqCategory.objects.create(category='Category One')
         FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category).save()
         FaqItem.objects.create(title='FAQ Title2', body='FAQ Body2', category=category).save()
         response = self.client.get(reverse("hc-cat-delete", kwargs={'id': category.id}))
         count_cat = FaqCategory.objects.count()
         count_items = FaqItem.objects.count()
-        print("Counted: {}, {}".format(str(count_cat), str(count_items)))
+        print("Counted: {}, {}, Response: {}".format(str(count_cat), str(count_items), str(response)))
         self.assertContains(response, "", status_code=302)
         # self.assertEqual(count_cat, 0)
         # self.assertEqual(count_items, 0)
