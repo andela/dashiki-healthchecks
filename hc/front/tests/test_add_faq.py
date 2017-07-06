@@ -26,7 +26,8 @@ class AddFaqTestCase(BaseTestCase):
     def test_create_faq(self):
         self.client.login(username="admin@test.com", password="pass")
         category = FaqCategory.objects.create(category='Category One')
-        data = {'title': 'FAQ Title', 'body': 'FAQ Body', 'category': category}
+        category.save()
+        data = {'title': 'FAQ Title', 'body': 'FAQ Body', 'category': category.id}
         form = AddFaqForm(data)
         self.assertTrue(form.is_valid())
         response = self.client.post(reverse("hc-save-faq"), data)
