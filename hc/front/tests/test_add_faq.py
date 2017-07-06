@@ -17,8 +17,10 @@ class AddFaqTestCase(BaseTestCase):
         data = {'category': 'Category One'}
         form = AddFaqCategoryForm(data)
         self.assertTrue(form.is_valid())
+
         response = self.client.post(reverse("hc-save-cat"), data)
         self.assertRedirects(response, "/docs/faq/")
+
         response = self.client.get(reverse("hc-docs-faq"))
         self.assertContains(response, "Category One", status_code=200)
         self.client.logout()
@@ -30,8 +32,10 @@ class AddFaqTestCase(BaseTestCase):
         data = {'title': 'FAQ Title', 'body': 'FAQ Body', 'category': category.id}
         form = AddFaqForm(data)
         self.assertTrue(form.is_valid())
+
         response = self.client.post(reverse("hc-save-faq"), data)
         self.assertRedirects(response, "/docs/faq/")
+
         response = self.client.get(reverse("hc-docs-faq"))
         self.assertContains(response, "FAQ Body", status_code=200)
         self.assertContains(response, "FAQ Title", status_code=200)
@@ -41,13 +45,35 @@ class AddFaqTestCase(BaseTestCase):
     def test_edit_faq(self):
         self.client.login(username="admin@test.com", password="pass")
         category = FaqCategory.objects.create(category='Category One')
-        data = {'title': 'FAQ Title', 'body': 'FAQ Body Edited', 'category': category}
         faq = FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category)
         faq.save()
-        response = self.client.post(reverse("hc-save-faq-edit", kwargs={'id': faq.id}), data)
-        self.assertRedirects(response, "/docs/faq/", status_code=302)
-        response = self.client.get(reverse("hc-docs-faq"))
+        new_data = {'title': 'FAQ Title Edited', 'body': 'FAQ Body Edited', 'category': category.id}
+
+        response = self.client.get(reverse("hc-faq-edit", kwargs={'id': faq.id}))
         self.assertContains(response, "FAQ Body", status_code=200)
+
+        response = self.client.post(reverse("hc-save-faq-edit", kwargs={'id': faq.id}), data=new_data)
+        self.assertRedirects(response, "/docs/faq/", status_code=302)
+
+        response = self.client.get(reverse("hc-docs-faq"))
+        self.assertContains(response, "FAQ Body Edited", status_code=200)
+        self.assertContains(response, "FAQ Title Edited", status_code=200)
+        self.client.logout()
+
+    def test_edit_faq_cat(self):
+        self.client.login(username="admin@test.com", password="pass")
+        category = FaqCategory.objects.create(category='Category One')
+        category.save()
+        new_data = {'category': 'Category Edited'}
+
+        response = self.client.get(reverse("hc-cat-edit", kwargs={'id': category.id}))
+        self.assertContains(response, "Category One", status_code=200)
+
+        response = self.client.post(reverse("hc-save-cat-edit", kwargs={'id': category.id}), data=new_data)
+        self.assertRedirects(response, "/docs/faq/", status_code=302)
+
+        response = self.client.get(reverse("hc-docs-faq"))
+        self.assertContains(response, "Category Edited", status_code=200)
         self.client.logout()
 
     def test_access_to_faq_creation(self):
@@ -61,6 +87,7 @@ class AddFaqTestCase(BaseTestCase):
         faq = FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category)
         faq.save()
         FaqItem.objects.create(title='FAQ Title2', body='FAQ Body2', category=category).save()
+
         response = self.client.get(reverse("hc-faq-delete", kwargs={'id': faq.id}))
         count = FaqItem.objects.count()
         self.assertContains(response, "", status_code=302)
@@ -72,6 +99,7 @@ class AddFaqTestCase(BaseTestCase):
         category = FaqCategory.objects.create(category='Category One')
         FaqItem.objects.create(title='FAQ Title', body='FAQ Body', category=category).save()
         FaqItem.objects.create(title='FAQ Title2', body='FAQ Body2', category=category).save()
+
         response = self.client.get(reverse("hc-cat-delete", kwargs={'id': category.id}))
         count_cat = FaqCategory.objects.count()
         count_items = FaqItem.objects.count()
