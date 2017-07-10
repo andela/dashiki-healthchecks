@@ -125,7 +125,7 @@ if os.environ.get("DB") == "mysql":
         }
     }
 
-if not DEBUG:
+if not DEBUG:  # pragma: no cover
     db_from_env = dj_database_url.config(conn_max_age=500)
     DATABASES['default'].update(db_from_env)
 
