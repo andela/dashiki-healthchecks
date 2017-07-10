@@ -66,11 +66,16 @@ class Check(models.Model):
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
 
     def has_access(self, current_user):
-        access_obj = CheckAccess.objects.filter(check_id=self.id, user_id=current_user)
+        access_obj = CheckAccess.objects.filter(check_obj=self, user=current_user)
         if access_obj:
             return True
         else:
             return False
+
+    def assign_access(self, user):
+        if not CheckAccess.objects.filter(check_obj=self, user=user).count():
+            new_access = CheckAccess.objects.create(check_obj=self, user=user)
+            new_access.save()
 
     def name_then_code(self):
         if self.name:
@@ -330,8 +335,8 @@ class Priority(models.Model):
 
 
 class CheckAccess(models.Model):
-    check_id = models.ForeignKey(Check, blank=False)
-    user_id = models.ForeignKey(User, blank=False)
+    check_obj = models.ForeignKey(Check, blank=False)
+    user = models.ForeignKey(User, blank=False)
 
     def __str__(self):
-        return "{} -> {}".format(self.user_id, self.check_id)
+        return "{} -> {}".format(self.user, self.check_obj)

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.core.paginator import Paginator
 from django.db import connection
-from hc.api.models import Channel, Check, Notification, Ping
+from hc.api.models import Channel, Check, Notification, Ping, CheckAccess
 
 
 class OwnershipListFilter(admin.SimpleListFilter):
@@ -200,3 +200,6 @@ class NotificationsAdmin(admin.ModelAdmin):
 
     def channel_value(self, obj):
         return obj.channel.value
+
+
+admin.site.register(CheckAccess)
