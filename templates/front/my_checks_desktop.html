@@ -79,6 +79,12 @@
                 <span class="icon-settings" aria-hidden="true"></span>
                 </button>
                 <ul class="dropdown-menu">
+                    <li>
+                        <a href="{% url 'hc-priority' check.code %}">
+                            Set priority list
+                        </a>
+                    </li>
+                    <li class="divider" role="separator"></li>
                     <li {% if check.status == "new" or check.status == "paused" %}class="disabled"{% endif %}>
                         <a class="pause-check"
                            href="#"

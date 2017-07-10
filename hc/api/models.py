@@ -294,7 +294,7 @@ class Priority(models.Model):
         channels = []
         for level_key, level_name in dict(PRIORITY_LEVELS).items():
             priorities = Priority.objects\
-                .filter(check=check, status="pending", level=level_key)\
+                .filter(current_check=check, status="pending", level=level_key)\
                 .exclude(level=0).order_by("level")
             for priority in priorities:
                 channels += priority.user.channel_set.all()
