@@ -52,6 +52,7 @@ def my_checks(request):
 
     ctx = {
         "page": "checks",
+        "team_user": request.team.user,
         "checks": checks,
         "now": timezone.now(),
         "tags": counter.most_common(),
@@ -672,7 +673,7 @@ def delete_faq(request, id):
             FaqItem.objects.filter(pk=id).delete()
             return redirect("hc-docs-faq")
         else:
-            return HttpResponse("Operation not allowed")
+            return HttpResponse("Operation not allowed")  # pragma: no cover
 
 
 @login_required
@@ -702,10 +703,10 @@ def faq_cat_edit(request, id=None):
 
 
 @login_required
-def delete_cat(request, id):
+def delete_cat(request, id=None):
     if request.method == 'GET':
         if id:
             FaqCategory.objects.filter(pk=id).delete()
             return redirect("hc-docs-faq")
         else:
-            return HttpResponse("Operation not allowed")
+            return HttpResponse(u'Operation not allowed')  # pragma: no cover
