@@ -15,7 +15,7 @@ class LoginTestCase(TestCase):
         session.save()
 
         # Get initial user count
-        initial_count = len(User.objects.all())
+        initial_count = User.objects.count()
 
         form = {"email": "alice@example.org"}
 
@@ -31,7 +31,6 @@ class LoginTestCase(TestCase):
         # And email sent
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, 'Log in to healthchecks.io')
-        ### Assert contents of the email body
 
         # Assert contents of the email body
         self.assertTrue(len(mail.outbox[0].body) > 0)
