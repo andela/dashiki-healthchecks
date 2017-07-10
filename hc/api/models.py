@@ -305,4 +305,4 @@ class Priority(models.Model):
     @staticmethod
     def get_user_levels(check):
         priorities = Priority.objects.filter(current_check=check)
-        return {priority.level: priority.user.id for priority in priorities}
+        return {priority.user.id: priority.level for priority in priorities}

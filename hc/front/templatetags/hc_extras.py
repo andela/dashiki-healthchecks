@@ -32,3 +32,8 @@ def hc_duration(td):
             result.append("%d %s" % (v, unit.plural))
 
     return " ".join(result)
+
+
+@register.filter(name='get_item')
+def get_item(levels, user_id):
+    return levels.get(user_id, None)

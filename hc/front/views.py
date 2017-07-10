@@ -262,7 +262,7 @@ def priority(request, code):
             members.add(check.user)
             for member in check.user.profile.member_set.all():
                 members.add(member.user)
-            print(Priority.get_user_levels(check))
+
             data = {
                 "check": check,
                 "team_name": check.user.profile.team_name,
@@ -282,9 +282,12 @@ def priority(request, code):
                 level = int(value)
                 user = User.objects.get(pk=user_id)
 
-                if not Priority.objects.filter(user=user, current_check=check):
+                priority = Priority.objects.filter(user=user, current_check=check).first()
+                if priority:
+                    priority.level = level
+                else:
                     priority = Priority(level=level, current_check=check, user=user)
-                    priority.save()
+                priority.save()
         return redirect("hc-checks")
 
 
