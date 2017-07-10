@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load compress humanize staticfiles hc_extras %}
+
+{% block title %}Set Priority - healthchecks.io{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h3 class="remove-check-title">Check Priority List: {{ check.name_then_code }}</h3>
+        <form id="priority-list-form" method="post" action="{% url 'hc-priority' check.code  %}">
+            {% csrf_token %}
+            <h4>Team: {{ team_name.capitalize }}</h4>
+            <br/>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Members</th>
+                    <th>Email</th>
+                    <th>Priority</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if not members %}
+                    <tr>
+                        <td colspan="4">
+                            No members at this time!
+                        </td>
+                    </tr>
+                {% else %}
+                    {% for member in members %}
+                        <tr>
+                            <td>{{ member.last_name }} {{ member.first_name }}</td>
+                            <td>{{ member.email }} </td>
+
+                            <td>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        {% for priority_key, priority_value in priorities %}
+                                            <label class="radio-inline">
+                                                <input type="radio" name="{{ member.id }}"
+                                                       class="mini priority-level" value="{{ priority_key }}">
+                                                {{ priority_value }}
+                                            </label>
+                                        {% endfor %}
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            <button type="submit" class="btn btn-success align-right">Save</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% compress js %}
+    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-switch.min.js' %}"></script>
+    <script>
+        $(".mini.priority-status").bootstrapSwitch();
+        $(".mini.priority-level").bootstrapSwitch();
+    </script>
+{% endcompress %}
+{% endblock %}
