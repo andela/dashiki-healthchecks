@@ -20,7 +20,7 @@ class SwitchTeamTestCase(BaseTestCase):
 
         url = "/accounts/switch_team/%s/" % self.alice.username
         r = self.client.get(url)
-        
+
         # Assert the expected error code
         self.assertEqual(r.status_code, 403)
 

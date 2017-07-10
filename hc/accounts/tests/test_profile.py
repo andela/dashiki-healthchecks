@@ -23,7 +23,6 @@ class ProfileTestCase(BaseTestCase):
         # Assert that the token is set
         self.assertTrue(token is not None)
         self.assertTrue(len(token) > 0)
-
         # Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
 
@@ -69,7 +68,6 @@ class ProfileTestCase(BaseTestCase):
                                                                     " join alice@example.org on healthchecks.io")
         self.assertTrue("alice@example.org invites you to their "
                         "healthchecks.io account" in mail.outbox[len(mail.outbox) - 1].body.lower())
-        self.assertTrue("frank@example.org" in member_emails)
 
     def test_add_team_member_checks_team_access_allowed_flag(self):
         self.client.login(username="charlie@example.org", password="password")
@@ -138,12 +136,16 @@ class ProfileTestCase(BaseTestCase):
         form = {"set_password": "1"}
         self.client.post("/accounts/profile/", form)
 
-        self.alice.profile.refresh_from_db()
-        # set api key
-        self.alice.profile.set_api_key()
-        self.assertTrue(self.alice.profile.api_key is not None)
 
-        # revoke key
-        self.alice.profile.api_key = None
-        self.alice.save()
-        self.assertTrue(self.alice.profile.api_key is None)
+    # Test it creates and revokes API key
+    def test_and_revoke_API_key(self):
+        self.client.login(username="alice@example.org", password="password")
+        form = {"create_api_key": "secret-api"}
+        # Create API-KEY
+        create = self.client.post("/accounts/profile/", form)
+        assert create.status_code == 200
+
+        # Revoke API-KEY
+        revoke = self.client.post("/accounts/profile/", {"revoke_api_key": "secret-api"})
+        assert revoke.status_code == 200
+
