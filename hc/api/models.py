@@ -43,9 +43,7 @@ PRIORITY_LEVELS = (
 
 PRIORITY_STATUSES = (
     ("pending", "Pending"),
-    ("contacted", "Contacted"),
-    ("unresponsive", "Unresponsive"),
-    ("responded", "Responded")
+    ("contacted", "Contacted")
 )
 
 
@@ -209,6 +207,7 @@ class Channel(models.Model):
         for x in range(0, 3):
             error = self.transport.notify(check) or ""
             if error in ("", "no-op"):
+                Priority.update_priority_status(check, self.user, "contacted")
                 break  # Success!
 
         if error != "no-op":
@@ -306,3 +305,10 @@ class Priority(models.Model):
     def get_user_levels(check):
         priorities = Priority.objects.filter(current_check=check)
         return {priority.user.id: priority.level for priority in priorities}
+
+    @staticmethod
+    def update_priority_status(check, user, status):
+        priority = Priority.objects.filter(current_check=check, user=user).first()
+        if priority:
+            priority.status = status
+            priority.save()
