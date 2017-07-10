@@ -40,7 +40,10 @@
                                         {% for priority_key, priority_value in priorities %}
                                             <label class="radio-inline">
                                                 <input type="radio" name="{{ member.id }}"
-                                                       class="mini priority-level" value="{{ priority_key }}">
+                                                       class="mini priority-level" value="{{ priority_key }}"
+                                                       {% if levels|get_item:member.id == priority_key %}
+                                                           checked
+                                                       {% endif %}>
                                                 {{ priority_value }}
                                             </label>
                                         {% endfor %}
