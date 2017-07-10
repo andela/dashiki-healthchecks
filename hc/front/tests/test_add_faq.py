@@ -107,3 +107,10 @@ class AddFaqTestCase(BaseTestCase):
         self.assertEqual(count_cat, 0)
         self.assertEqual(count_items, 0)
         self.client.logout()
+
+    def test_delete_faq_category_wrong_id(self):
+        self.client.login(username="admin@test.com", password="pass")
+        response = self.client.get(reverse("hc-cat-delete"))
+        print("Response")
+        print(response.content)
+        self.assertEqual(response.content, u'Operation not allowed')
