@@ -308,7 +308,12 @@ class Priority(models.Model):
 
     @staticmethod
     def update_priority_status(check, user, status):
-        priority = Priority.objects.filter(current_check=check, user=user).first()
-        if priority:
+        priority_query = Priority.objects.filter(current_check=check)
+        if user is None:
+            priorities = priority_query.all()
+        else:
+            priorities = priority_query.filter(user=user)
+
+        for priority in priorities:
             priority.status = status
             priority.save()

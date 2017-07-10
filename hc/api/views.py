@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from hc.api import schemas
 from hc.api.decorators import check_api_key, uuid_or_400, validate_json
-from hc.api.models import Check, Ping
+from hc.api.models import Check, Ping, Priority
 from hc.lib.badges import check_signature, get_badge_svg
 
 
@@ -28,6 +28,7 @@ def ping(request, code):
 
     check.save()
     check.refresh_from_db()
+    Priority.update_priority_status(check, None, "pending")
 
     ping = Ping(owner=check)
     headers = request.META
