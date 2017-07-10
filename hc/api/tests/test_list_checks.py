@@ -54,7 +54,6 @@ class ListChecksTestCase(BaseTestCase):
 
         response = self.get()
         data = response.json()
-        print(data["checks"])
         self.assertEqual(len(data["checks"]), 2)
         for check in data["checks"]:
             self.assertNotEqual(check["name"], "Bob 1")
