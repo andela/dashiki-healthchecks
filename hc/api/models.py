@@ -53,6 +53,13 @@ class Check(models.Model):
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
 
+    def has_access(self, current_user):
+        access_obj = CheckAccess.objects.filter(check_id=self.id, user_id=current_user)
+        if access_obj:
+            return True
+        else:
+            return False
+
     def name_then_code(self):
         if self.name:
             return self.name
@@ -263,3 +270,11 @@ class Notification(models.Model):
     channel = models.ForeignKey(Channel)
     created = models.DateTimeField(auto_now_add=True)
     error = models.CharField(max_length=200, blank=True)
+
+
+class CheckAccess(models.Model):
+    check_id = models.ForeignKey(Check, blank=False)
+    user_id = models.ForeignKey(User, blank=False)
+
+    def __str__(self):
+        return "{} -> {}".format(self.user_id, self.check_id)
