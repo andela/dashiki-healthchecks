@@ -81,7 +81,7 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a href="{% url 'hc-priority' check.code %}">
-                            Set priority list
+                            Set priority list <span class="label label-success">{{ check.total_priorities }}</span>
                         </a>
                     </li>
                     <li class="divider" role="separator"></li>

@@ -146,6 +146,9 @@ class Check(models.Model):
 
         return result
 
+    def total_priorities(self):
+        return len(self.priority_set.all())
+
 
 class Ping(models.Model):
     n = models.IntegerField(null=True)
