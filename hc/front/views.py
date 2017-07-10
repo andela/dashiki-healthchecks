@@ -31,6 +31,7 @@ def pairwise(iterable):
 def my_checks(request):
     q = Check.objects.filter(user=request.team.user).order_by("created")
     checks = list(q)
+    checks = [check for check in checks if check.has_access(request.user)]
 
     counter = Counter()
     down_tags, grace_tags = set(), set()
@@ -140,6 +141,7 @@ def add_check(request):
     check.save()
 
     check.assign_all_channels()
+    check.assign_access(request.user)
 
     return redirect("hc-checks")
 
