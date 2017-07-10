@@ -34,6 +34,20 @@ PO_PRIORITIES = {
     2: "emergency"
 }
 
+PRIORITY_LEVELS = (
+    (1, "High"),
+    (2, "Medium"),
+    (3, "Low"),
+    (0, "None")
+)
+
+PRIORITY_STATUSES = (
+    ("pending", "Pending"),
+    ("contacted", "Contacted"),
+    ("unresponsive", "Unresponsive"),
+    ("responded", "Responded")
+)
+
 
 class Check(models.Model):
 
@@ -73,7 +87,11 @@ class Check(models.Model):
             raise NotImplementedError("Unexpected status: %s" % self.status)
 
         errors = []
-        for channel in self.channel_set.all():
+        channels = Priority.get_priority_channels(self)
+        if not channels:
+            channels = self.channel_set.all()
+
+        for channel in channels:
             error = channel.notify(self)
             if error not in ("", "no-op"):
                 errors.append((channel, error))
@@ -263,3 +281,28 @@ class Notification(models.Model):
     channel = models.ForeignKey(Channel)
     created = models.DateTimeField(auto_now_add=True)
     error = models.CharField(max_length=200, blank=True)
+
+
+class Priority(models.Model):
+    user = models.ForeignKey(User)
+    current_check = models.ForeignKey(Check)
+    level = models.IntegerField(choices=PRIORITY_LEVELS)
+    status = models.CharField(max_length=100, choices=PRIORITY_STATUSES, default="pending")
+
+    @staticmethod
+    def get_priority_channels(check):
+        channels = []
+        for level_key, level_name in dict(PRIORITY_LEVELS).items():
+            priorities = Priority.objects\
+                .filter(check=check, status="pending", level=level_key)\
+                .exclude(level=0).order_by("level")
+            for priority in priorities:
+                channels += priority.user.channel_set.all()
+            if channels:
+                return channels
+        return []
+
+    @staticmethod
+    def get_user_levels(check):
+        priorities = Priority.objects.filter(current_check=check)
+        return {priority.level: priority.user.id for priority in priorities}
