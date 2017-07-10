@@ -16,7 +16,7 @@ import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-HOST = "localhost"
+HOST = os.environ.get("HOST", "localhost")
 SECRET_KEY = "---"
 DEBUG = os.environ.get("DEBUG") or True
 ALLOWED_HOSTS = []
@@ -89,41 +89,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'hc.wsgi.application'
 TEST_RUNNER = 'hc.api.tests.CustomRunner'
 
-
-# Default database engine is SQLite. So one can just check out code,
-# install requirements.txt and do manage.py runserver and it works
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME':   './hc.sqlite',
-    }
-}
-
-# You can switch database engine to postgres or mysql using environment
-# variable 'DB'. Travis CI does this.
-if os.environ.get("DB") == "postgres":
-    DATABASES = {
-        'default': {
-            'ENGINE':   'django.db.backends.postgresql',
-            'NAME':     'hc',
-            'USER':     'postgres',
-            'TEST': {'CHARSET': 'UTF8'}
-        }
-    }
-
-if os.environ.get("DB") == "mysql":
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'USER':     'root',
-            'NAME':     'hc',
-            'TEST': {'CHARSET': 'UTF8'}
-        }
-    }
-
-if not DEBUG:
-    db_from_env = dj_database_url.config(conn_max_age=500)
-    DATABASES['default'].update(db_from_env)
+DATABASES = {}
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'] = db_from_env
 
 LANGUAGE_CODE = 'en-us'
 
@@ -135,7 +103,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-SITE_ROOT = "http://localhost:8000"
+SITE_ROOT = os.environ.get("SITE_ROOT", "http://localhost:8000")
 PING_ENDPOINT = SITE_ROOT + "/ping/"
 PING_EMAIL_DOMAIN = HOST
 STATIC_URL = '/static/'
