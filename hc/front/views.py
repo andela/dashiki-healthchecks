@@ -6,6 +6,7 @@ import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -13,8 +14,9 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
+
 from hc.api.decorators import uuid_or_400
-from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
+from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, PRIORITY_LEVELS, Channel, Check, Ping, Priority
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm)
 
@@ -259,6 +261,45 @@ def log(request, code):
     }
 
     return render(request, "front/log.html", ctx)
+
+
+@login_required
+@uuid_or_400
+def priority(request, code):
+    if request.method == "GET":
+        try:
+            check = Check.objects.get(code=code)
+            members = set()
+            members.add(check.user)
+            for member in check.user.profile.member_set.all():
+                members.add(member.user)
+
+            data = {
+                "check": check,
+                "team_name": check.user.profile.team_name,
+                "members": members,
+                "priorities": PRIORITY_LEVELS,
+                "levels": Priority.get_user_levels(check)
+            }
+            return render(request, "front/priority.html", data)
+        except Check.DoesNotExist:
+            return HttpResponseBadRequest()
+
+    if request.method == "POST":
+        check = Check.objects.filter(code=code).first()
+        for key, value in request.POST.items():
+            if key != "csrfmiddlewaretoken":
+                user_id = int(key)
+                level = int(value)
+                user = User.objects.get(pk=user_id)
+
+                priority = Priority.objects.filter(user=user, current_check=check).first()
+                if priority:
+                    priority.level = level
+                else:
+                    priority = Priority(level=level, current_check=check, user=user)
+                priority.save()
+        return redirect("hc-checks")
 
 
 @login_required
