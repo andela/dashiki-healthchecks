@@ -110,7 +110,7 @@ class Check(models.Model):
 
         errors = []
         channels = Priority.get_priority_channels(self)
-        while ((self.nag_time) and (self.status == "down")):
+        while self.nag_time and (self.status == "down"):
             if not channels:
                 channels = self.channel_set.all()
 
