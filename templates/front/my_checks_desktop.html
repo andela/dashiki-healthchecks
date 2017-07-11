@@ -9,6 +9,7 @@
             <span class="checks-subline">Grace</span>
         </th>
         <th>Last Ping</th>
+        <th>Nag</th>
         <th></th>
     </tr>
     {% for check in checks %}
@@ -72,6 +73,14 @@
         {% else %}
             Never
         {% endif %}
+        </td>
+        <td class="url-cell">
+            <div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <div class="slider round"></div>
+                </label>
+            </div>
         </td>
         <td>
             <div class="check-menu dropdown">
