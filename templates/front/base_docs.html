@@ -9,7 +9,7 @@
     <div class="col-sm-2">
 
     <ul class="docs-nav">
-        <li {% if section=="home" %} class="active" {% endif %}>
+        <li {% if section == "home" %} class="active" {% endif %}>
             <a href="{% url 'hc-docs' %}">Executing a Ping</a>
             <ul>
                 <li><a href="{% url 'hc-docs' %}#crontab">Crontab</a></li>
@@ -22,18 +22,10 @@
                 <li><a href="{% url 'hc-docs' %}#email">Email</a></li>
             </ul>
         </li>
-        <li {% if section=="api" %} class="active" {% endif %}>
+        <li {% if section == "api" %} class="active" {% endif %}>
             <a href="{% url 'hc-docs-api' %}">REST API</a>
         </li>
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <li {% if section=="help" %} class="active" {% endif %}>
-=======
         <li {% if section == "help" %} class="active" {% endif %}>
->>>>>>> [#147170309] Add font awesome icons
-=======
-        <li {% if section == "help" %} class="active" {% endif %}>
->>>>>>> 9489a546167dbe255ba49b75c7b87ba9d96a3aa1
             <a href="{% url 'hc-docs-faq' %}">HELP CENTER</a>
             <ul>
                 <li><a href="{% url 'hc-docs-faq' %}#faqs">FAQ's</a></li>
