@@ -123,7 +123,7 @@ class Check(models.Model):
 
         while (self.nag and (self.status == "down")):
             alert()
-            time.sleep(3600)
+            # time.sleep(3600)
         else:
             alert()
 
