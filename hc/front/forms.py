@@ -24,6 +24,8 @@ class TimeoutForm(forms.Form):
     timeout = forms.IntegerField(min_value=60, max_value=2592000)
     grace = forms.IntegerField(min_value=60, max_value=2592000)
 
+class NagTimeForm(forms.Form):
+    nag_time = forms.IntegerField(min_value=60, max_value=2592000)
 
 class NagTimeForm(forms.Form):
     nag_time = forms.IntegerField(min_value=60, max_value=2592000)

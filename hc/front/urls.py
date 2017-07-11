@@ -40,6 +40,7 @@ channel_urls = [
     url(r'^([\w-]+)/verify/([\w-]+)/$', views.verify_email,
         name="hc-verify-email"),
 ]
+
 urlpatterns = [
     url(r'^$', views.index, name="hc-index"),
     url(r'^checks/$', views.my_checks, name="hc-checks"),
