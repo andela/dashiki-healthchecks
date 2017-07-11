@@ -196,7 +196,8 @@ def update_timeout(request, code):
         check.save()
 
     return redirect("hc-checks")
-    
+
+
 @login_required
 @uuid_or_400
 def set_nag_time(request, code):
