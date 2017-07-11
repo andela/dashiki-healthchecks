@@ -15,6 +15,11 @@ urlpatterns = [
 
     url(r'^profile/$', views.profile, name="hc-profile"),
 
+    url(r'^profile/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
+        views.assign_checks, name="hc-assign-check"),
+
+    url(r'^profile/save/assign/$', views.assign_checks, name="hc-save-assign-check"),
+
     url(r'^unsubscribe_reports/([\w-]+)/$',
         views.unsubscribe_reports, name="hc-unsubscribe-reports"),
 
@@ -23,6 +28,5 @@ urlpatterns = [
 
    url(r'^switch_team/([\w-]+)/$',
         views.switch_team, name="hc-switch-team"),
-
 
 ]
