@@ -57,7 +57,8 @@ def my_checks(request):
         "tags": counter.most_common(),
         "down_tags": down_tags,
         "grace_tags": grace_tags,
-        "ping_endpoint": settings.PING_ENDPOINT
+        "ping_endpoint": settings.PING_ENDPOINT,
+        "current_user": request.user
     }
 
     return render(request, "front/my_checks.html", ctx)
@@ -274,7 +275,8 @@ def priority(request, code):
             members = set()
             members.add(check.user)
             for member in check.user.profile.member_set.all():
-                members.add(member.user)
+                if check.has_access(member.user):
+                    members.add(member.user)
 
             data = {
                 "check": check,

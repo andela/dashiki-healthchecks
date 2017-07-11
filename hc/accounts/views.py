@@ -202,6 +202,12 @@ def profile(request):
                 Member.objects.filter(team=profile,
                                       user=farewell_user).delete()
 
+                team_checks = list(Check.objects.filter(user=request.team.user))
+                for check in team_checks:
+                    if check.has_access(farewell_user):
+                        access_id = check.get_assigned_id(farewell_user)
+                        CheckAccess.objects.get(pk=access_id).delete()
+
                 messages.info(request, "%s removed from team!" % email)
         elif "set_team_name" in request.POST:
             if not profile.team_access_allowed:
