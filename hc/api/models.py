@@ -66,11 +66,14 @@ class Check(models.Model):
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
 
     def has_access(self, user):
+        if self.user.id == user.id:
+            return True
+
         access_obj = CheckAccess.objects.filter(check_obj=self, user=user)
+
         if access_obj:
             return True
-        else:
-            return False
+        return False
 
     def get_assigned_id(self, user):
         access_obj = CheckAccess.objects.get(check_obj=self, user=user)
