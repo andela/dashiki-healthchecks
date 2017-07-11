@@ -88,6 +88,7 @@ class Check(models.Model):
             new_access = CheckAccess.objects.create(check_obj=self, user=user)
             new_access.save()
 
+
     def name_then_code(self):
         if self.name:
             return self.name
