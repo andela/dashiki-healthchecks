@@ -18,6 +18,7 @@ class AddCheckTestCase(BaseTestCase):
         self.check = Check(user=self.alice, name="Alice Was Here")
         self.check.save()
         self.client.logout()
+        self.check.assign_access(self.bob)
 
         self.client.login(username="bob@example.org", password="password")
         r = self.client.get(reverse("hc-checks"))

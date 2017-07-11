@@ -10,6 +10,8 @@ class MyChecksTestCase(BaseTestCase):
         super(MyChecksTestCase, self).setUp()
         self.check = Check(user=self.alice, name="Alice Was Here")
         self.check.save()
+        self.check.assign_access(self.alice)
+        self.check.assign_access(self.bob)
 
     def test_it_works(self):
         for email in ("alice@example.org", "bob@example.org"):
