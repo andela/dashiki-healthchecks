@@ -20,6 +20,6 @@ class Migration(migrations.Migration):
                                             ('pd', 'PagerDuty'), ('po', 'Pushover'),
                                             ('victorops', 'VictorOps'), ('pushbullet',
                                                                          'PushBullet')],
-                                                                         max_length=20),
+                                   max_length=20),
         ),
     ]
