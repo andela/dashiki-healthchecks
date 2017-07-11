@@ -60,6 +60,34 @@ $(function () {
         $("#update-timeout-timeout").val(rounded);
     });
 
+var nagSlider = document.getElementById("nag-slider");
+    noUiSlider.create(nagSlider, {
+        start: [20],
+        connect: "lower",
+        range: {
+            'min': 60,
+            '20%': 1800,
+            '40%': 43200,
+            '60%': 604800,
+            '80%': (2592000 * 6),
+            'max': (2592000 * 12),
+        },
+        pips: {
+            mode: 'values',
+            values: [60, 3600, 86400, SECONDS_IN_MONTH, (SECONDS_IN_MONTH * 6), (SECONDS_IN_MONTH * 12)],
+            density: 4,
+            format: {
+                to: secsToText,
+                from: function() {}
+            }
+        }
+    });
+
+    nagSlider.noUiSlider.on("update", function(a, b, value) {
+        var rounded = Math.round(value);
+        // $("#nag-slider-value").text(secsToText(rounded));
+        $("#update-nag-time").val(rounded);
+    });
 
     var graceSlider = document.getElementById("grace-slider");
     noUiSlider.create(graceSlider, {
@@ -112,6 +140,16 @@ $(function () {
         periodSlider.noUiSlider.set($this.data("timeout"))
         graceSlider.noUiSlider.set($this.data("grace"))
         $('#update-timeout-modal').modal({"show":true, "backdrop":"static"});
+
+        return false;
+    });
+
+    $(".nag-time").click(function() {
+        var $this = $(this);
+
+        $("#update-nagtime-form").attr("action", $this.data("url"));
+        nagSlider.noUiSlider.set($this.data("nag_time"))
+        $('#update-nagtime-modal').modal({"show":true, "backdrop":"static"});
 
         return false;
     });

@@ -74,13 +74,23 @@
             Never
         {% endif %}
         </td>
-        <td class="url-cell">
+        <td class="url-cell timeout-cell">
             <div>
                 <label class="switch">
                     <input type="checkbox">
                     <div class="slider round"></div>
                 </label>
             </div>
+            <span
+                data-url="{% url 'hc-set-nag-time' check.code %}"
+                data-nagtime="{{ check.nag_time.total_seconds }}"
+                class="nag-time">
+                {{ check.nag_time|hc_duration }}
+                <br />
+                <!--<span class="checks-subline">
+                {{ check.grace|hc_duration }}
+                </span>-->
+            </span>
         </td>
         <td>
             <div class="check-menu dropdown">
