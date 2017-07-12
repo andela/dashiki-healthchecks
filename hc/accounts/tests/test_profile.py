@@ -1,6 +1,8 @@
+from django.urls import reverse
+
 from hc.test import BaseTestCase
 from hc.accounts.models import Member
-from hc.api.models import Check
+from hc.api.models import Check, CheckAccess
 
 from django.core import mail
 
@@ -37,7 +39,7 @@ class ProfileTestCase(BaseTestCase):
         check.save()
 
         self.alice.profile.send_report()
-        
+
         # Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
         self.assertEqual(mail.outbox[len(mail.outbox) - 1].subject, "Monthly Report")
@@ -129,13 +131,6 @@ class ProfileTestCase(BaseTestCase):
 
         # Expect only Alice's tags
         self.assertNotContains(r, "bobs-tag.svg")
-        
-    # Test it creates and revokes API key
-    def test_and_revoke_API_key(self):
-        self.client.login(username="alice@example.org", password="password")
-        form = {"set_password": "1"}
-        self.client.post("/accounts/profile/", form)
-
 
     # Test it creates and revokes API key
     def test_and_revoke_API_key(self):
@@ -149,3 +144,55 @@ class ProfileTestCase(BaseTestCase):
         revoke = self.client.post("/accounts/profile/", {"revoke_api_key": "secret-api"})
         assert revoke.status_code == 200
 
+    def test_assign_link_renders_assign_checks_page(self):
+        self.client.login(username="alice@example.org", password="password")
+        check = Check(name="Team Check")
+        check.user = self.alice
+        check.save()
+
+        response = self.client.get(reverse("hc-assign-check", kwargs={'email': self.bob.email}))
+        self.assertContains(response, check.name, status_code=200)
+
+    def test_assign_a_check_to_a_team_member(self):
+        self.client.login(username="alice@example.org", password="password")
+        check_one = Check(name="Team Check One", user=self.alice)
+        check_two = Check(name="Team Check Two", user=self.alice)
+        check_one.save()
+        check_two.save()
+
+        payload = {
+            "right_list": [check_one.id],
+            "left_list": [check_two.id],
+            "assign-checks": '',
+            "email": self.bob.email
+        }
+        response = self.client.post(reverse("hc-profile"), data=payload)
+        self.bob.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(CheckAccess.objects.filter(user=self.bob, check_obj=check_one).count(), 1)
+
+    def test_unassign_a_check_from_a_team_member(self):
+        self.client.login(username="alice@example.org", password="password")
+        check_one = Check(name="Team Check One", user=self.alice)
+        check_two = Check(name="Team Check Two", user=self.alice)
+        check_one.save()
+        check_two.save()
+
+        cs = CheckAccess(user=self.bob, check_obj=check_one)
+        cs.save()
+
+        self.assertTrue(check_one.has_access(self.bob))
+
+        payload = {
+            "right_list": [],
+            "left_list": [check_two.id, check_one.id],
+            "assign-checks": '',
+            "email": self.bob.email
+        }
+        response = self.client.post(reverse("hc-profile"), data=payload)
+        self.bob.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(check_one.has_access(self.bob))
+        self.assertEqual(CheckAccess.objects.filter(user=self.bob, check_obj=check_one).count(), 0)

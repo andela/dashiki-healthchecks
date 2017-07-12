@@ -222,9 +222,9 @@ def profile(request):
             email = request.POST.get('email')
             assignee = User.objects.get(email=email)
             checks_to_assign = request.POST.getlist('right_list')
-            un_assigned_checks = request.POST.getlist('left_list')
+            unassigned_checks = request.POST.getlist('left_list')
             check_obj_to_assign = [Check.objects.get(pk=value) for value in checks_to_assign]
-            check_obj_unassigned = [Check.objects.get(pk=value) for value in un_assigned_checks]
+            check_obj_unassigned = [Check.objects.get(pk=value) for value in unassigned_checks]
 
             for check in check_obj_to_assign:
                 if not check.has_access(assignee):
