@@ -93,6 +93,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'hc.wsgi.application'
 TEST_RUNNER = 'hc.api.tests.CustomRunner'
 
+DATABASES = {}
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'] = db_from_env
 
 # Default database engine is SQLite. So one can just check out code,
 # install requirements.txt and do manage.py runserver and it works

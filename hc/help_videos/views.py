@@ -73,7 +73,8 @@ def delete_video(request):
         if request_id:
             obj = Video.objects.filter(id=request_id).first()
             # do a hard delete
-            os.system("rm -r {}".format("{}{}".format(BASE_DIR, obj.resource_url).replace("%20", "\ ")))
+            os.system("rm -r {}".format("{}{}".format(BASE_DIR,
+                                                      obj.resource_url).replace("%20", "\ ")))
             Video.objects.filter(id=request_id).delete()
             return HttpResponse("success".format(BASE_DIR))
         else:

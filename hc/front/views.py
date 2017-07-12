@@ -131,6 +131,17 @@ def docs_api(request):
 
     return render(request, "front/docs_api.html", ctx)
 
+def docs_help(request):
+    ctx = {
+        "page": "docs",
+        "section": "help",
+        "SITE_ROOT": settings.SITE_ROOT,
+        "PING_ENDPOINT": settings.PING_ENDPOINT,
+        "default_timeout": int(DEFAULT_TIMEOUT.total_seconds()),
+        "default_grace": int(DEFAULT_GRACE.total_seconds())
+    }
+
+    return render(request, "front/docs_help.html", ctx)
 
 def docs_help(request):
     ctx = {

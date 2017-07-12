@@ -120,6 +120,38 @@ $(function(){
              }
         }
 
+<<<<<<< HEAD
+=======
+    $(function(){
+        let do_upload = ($url = "{% url 'hc-help-videos-upload'%}") =>{
+            if (window.FormData === undefined){
+                alert("Browser doesn't support HTML5 file upload");
+             }else{
+                let $formData = new FormData($("#video-upload__form")[0]);
+                $.ajax({
+                    url:$url,
+                    type:'post',
+                    data:$formData,
+                    cache:false,
+                    contentType:false,
+                    processData:false,
+                    success:function($data){
+                        if ($data =='success'){
+                            $("#add-video__modal").modal('hide');
+                            window.location.refresh();
+                        }else{
+                            alert($data);
+                        }
+                    }
+                });
+             }
+        }
+
+        $("#btn-video__upload").click(function(){
+            do_upload()
+        })
+    });
+>>>>>>> c6fc163b67101266f26e98835ad1e26fffdf7f73
         $('#btn-video__upload').click(function(){
             do_upload();
        });
