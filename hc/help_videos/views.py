@@ -17,10 +17,9 @@ def index(request):
     }
     return render(request, 'help_videos/videos.html', ctx)
 
-# define admin required decorator
-
 
 def admin_required(func):
+    # define admin checking decorator
     def wrap(request):
         if request.user.is_superuser:
             return func(request)
