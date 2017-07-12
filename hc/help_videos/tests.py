@@ -41,6 +41,38 @@ class HelpVideosTestCase(TestCase):
         self.assertTrue(response.status_code, 200)
         self.assertEqual(Video.objects.count() - initial_video_count, 1)
 
+    def test_delete_video_successfully(self):
+        # first upload a video
+        form = {"title": "Dummy video",
+                "description": "loremipsum",
+                "video-file": open("dummy.mp4", "rb")
+                }
+        response = self.client.post(reverse('hc-help-videos-upload'), form)
+        self.assertTrue(response.status_code, 200)
+
+        # now delete video
+        uploaded_video = Video.objects.last()
+        del_form = {"id": uploaded_video.id}
+        del_response = self.client.post(
+            reverse('hc-delete-video'), del_form)
+        self.assertEqual(del_response.status_code, 200)
+
+    def test_delete_video_from_db_successfully(self):
+        # first upload a video
+        form = {"title": "Dummy video",
+                "description": "loremipsum",
+                "video-file": open("dummy.mp4", "rb")
+                }
+        response = self.client.post(reverse('hc-help-videos-upload'), form)
+        self.assertTrue(response.status_code, 200)
+        # now delete video
+        uploaded_video = Video.objects.last()
+        del_form = {"id": uploaded_video.id}
+        self.client.post(reverse('hc-delete-video'), del_form)
+
+        # check if video is deleted from database
+        self.assertTrue(Video.objects.last() is None)
+
     def tearDown(self):
         self.client.logout()
         os.system("rm -r {}".format("{}{}".format(BASE_DIR,
