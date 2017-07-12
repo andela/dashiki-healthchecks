@@ -62,19 +62,15 @@ $(function () {
 
 var nagSlider = document.getElementById("nag-slider");
     noUiSlider.create(nagSlider, {
-        start: [20],
+        start: [3600],
         connect: "lower",
         range: {
             'min': 60,
-            '20%': 1800,
-            '40%': 43200,
-            '60%': 604800,
-            '80%': (2592000 * 6),
-            'max': (2592000 * 12),
+            'max': 604800,
         },
         pips: {
             mode: 'values',
-            values: [60, 3600, 86400, SECONDS_IN_MONTH, (SECONDS_IN_MONTH * 6), (SECONDS_IN_MONTH * 12)],
+            values: [60, 604800],
             density: 4,
             format: {
                 to: secsToText,
@@ -85,7 +81,7 @@ var nagSlider = document.getElementById("nag-slider");
 
     nagSlider.noUiSlider.on("update", function(a, b, value) {
         var rounded = Math.round(value);
-        // $("#nag-slider-value").text(secsToText(rounded));
+        $("#nag-slider-value").text(secsToText(rounded));
         $("#update-nag-time").val(rounded);
     });
 
