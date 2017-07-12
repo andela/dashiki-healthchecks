@@ -1,12 +1,9 @@
-# Create your tests here.
 import os
 from hc.help_videos.models import Video
 from django.test import TestCase
 from django.urls import reverse
 from hc.settings import BASE_DIR
 from django.contrib.auth.models import User
-
-# Create your tests here.
 
 
 class HelpVideosTestCase(TestCase):

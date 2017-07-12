@@ -7,8 +7,6 @@ from django.contrib.auth.decorators import login_required
 import os
 from hc.settings import BASE_DIR
 
-# Create your views here.
-
 
 def index(request):
     ctx = {
