@@ -1,19 +1,9 @@
 {% extends "front/base_docs.html" %}
 {% load static %}
-<<<<<<< HEAD
-<<<<<<< HEAD
-{% load fontawesome %}
 
-{% block title %} Healthchecks FAQ's {% endblock %}
-=======
-
-{% block title %}Healthchecks FAQ's{% endblock %}
->>>>>>> [#147170309] Add delete and edit functionality
-=======
 {% load fontawesome %}
 {% fontawesome_stylesheet %}
 {% block title %} Healthchecks FAQ's {% endblock %}
->>>>>>> [#147170309] Add font awesome icons
 
 {% block docs_content %}
 <h2>
@@ -32,92 +22,6 @@
 </h2>
 
 <div class="panel-group wrap" id="accordion" role="tablist" aria-multiselectable="true">
-<<<<<<< HEAD
-{% for category, faq_list in faqs.items %}
-  <h4>{{ category }}</h4><hr/>
-  {% for faq in faq_list %}
-      <div class="panel">
-        <div class="panel-heading" role="tab">
-          <h4 class="panel-title">
-        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ faq.id }}" aria-expanded="false">
-           {{ faq.title }}
-        </a>
-      </h4>
-        </div>
-        <div id="collapse{{ faq.id }}" class="panel-collapse collapse" role="tabpanel">
-          <div class="panel-body text-justify">
-             {{ faq.body | safe }}
-          </div>
-          {% if request.user.is_superuser %}
-            <div class="faq-well">
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">{% fontawesome_icon 'remove' %}</a>
-                <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">{% fontawesome_icon 'pencil' %}</a>
-=======
-              <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">Delete</a>
-              <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">Edit</a>
->>>>>>> [#147170309] Add delete and edit functionality
-=======
-                <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">Delete</a>
-                <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">Edit</a>
->>>>>>> [#147170309] Edit CKEditor toolbar
-=======
-                <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">{% fontawesome_icon 'remove' %}</a>
-                <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">{% fontawesome_icon 'pencil' %}</a>
->>>>>>> [#147170309] Add font awesome icons
-            </div>
-          {% endif %}
-        </div>
-      </div>
-  {% endfor %}
-{% endfor %}
-  </div>
-  {% include "front/faq_modal.html" %}
-  <script
-  src="https://code.jquery.com/jquery-3.2.1.min.js"
-  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-  crossorigin="anonymous"></script>
-  <script type="text/ecmascript">
-  $(function(){
-    let $parent = $('#edit-faq__modal .modal-body');
-    $('.btn-faq__edit').click(function(){
-      let $uri = $(this).attr('uri');
-      $.ajax({
-        url:$uri,
-        type:'get',
-        success:function($data){
-          $parent.html($data);
-          CKEDITOR.config.width="100%";
-          CKEDITOR.config.toolbar = [
-<<<<<<< HEAD
-<<<<<<< HEAD
-   ['Styles','Format','Font','FontSize','Bold','Italic','Underline','StrikeThrough','-','Undo','Redo',
-   'NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-=======
-   ['Styles','Format','Font','FontSize'],
-   '/',
-   ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace','-','Outdent','Indent','-','Print'],
-   '/',
-   ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-   ['Image','Table','-','Link','Flash','Smiley','TextColor','BGColor','Source']
->>>>>>> [#147170309] Add delete and edit functionality
-=======
-   ['Styles','Format','Font','FontSize','Bold','Italic','Underline','StrikeThrough','-','Undo','Redo',
-   'NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
->>>>>>> [#147170309] Edit CKEditor toolbar
-] ;
-          CKEDITOR.replace("id_body",{
-            width:['820px']
-          });
-          $('#edit-faq__modal').modal('show');
-        }
-      });
-    });
-  })
-  </script>
-=======
   {% if not faqs %}
     <div class="jumbotron text-center">
       No FAQ's added so far!
@@ -159,5 +63,4 @@
 {% include "front/faq_modal.html" %}
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="{% static 'js/faq_modals.js' %}"></script>
->>>>>>> [#147170309] CRUD FAQ Category, separate js from html style buttons
 {% endblock %}
