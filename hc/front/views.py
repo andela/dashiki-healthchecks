@@ -248,6 +248,20 @@ def remove_nag_time(request, code):
 
 @login_required
 @uuid_or_400
+def remove_nag_time(request, code):
+
+    check = get_object_or_404(Check, code=code)
+    if check.user_id != request.team.user.id:
+        return HttpResponseForbidden()
+
+    check.nag_time = td(hours=0)
+    check.save()
+
+    return redirect("hc-checks")
+
+
+@login_required
+@uuid_or_400
 def pause(request, code):
     assert request.method == "POST"
 
