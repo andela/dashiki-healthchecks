@@ -3,6 +3,7 @@
 import hashlib
 import json
 import uuid
+import time
 from datetime import timedelta as td
 
 from django.conf import settings
@@ -21,7 +22,7 @@ STATUSES = (
 )
 DEFAULT_TIMEOUT = td(days=1)
 DEFAULT_GRACE = td(hours=1)
-DEFAULT_NAG_TIME = td(hours=1)
+DEFAULT_NAG_TIME = td(hours=0)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
@@ -66,7 +67,6 @@ class Check(models.Model):
     last_ping = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
-    nag = models.BooleanField(default=False)
     nag_time = models.DurationField(default=DEFAULT_NAG_TIME)
 
     def has_access(self, user):
@@ -121,9 +121,9 @@ class Check(models.Model):
 
             return errors
 
-        while (self.nag and (self.status == "down")):
+        while ((self.nag_time) and (self.status == "down")):
             alert()
-            # time.sleep(3600)
+            time.sleep(self.nag_time)
         else:
             alert()
 
