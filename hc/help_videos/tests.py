@@ -77,3 +77,5 @@ class HelpVideosTestCase(TestCase):
         self.client.logout()
         os.system("rm -r {}".format("{}{}".format(BASE_DIR,
                                                   "/dummy.mp4").replace("%20", "\ ")))
+        os.system("rm -r {}{}".format(BASE_DIR,
+                                      "/media/dummy.mp4".replace("%20", "\ ")))
