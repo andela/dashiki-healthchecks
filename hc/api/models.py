@@ -108,9 +108,9 @@ class Check(models.Model):
         if self.status not in ("up", "down"):
             raise NotImplementedError("Unexpected status: %s" % self.status)
 
-        def alert():
-            errors = []
-            channels = Priority.get_priority_channels(self)
+        errors = []
+        channels = Priority.get_priority_channels(self)
+        while ((self.nag_time) and (self.status == "down")):
             if not channels:
                 channels = self.channel_set.all()
 
@@ -118,14 +118,16 @@ class Check(models.Model):
                 error = channel.notify(self)
                 if error not in ("", "no-op"):
                     errors.append((channel, error))
-
-            return errors
-
-        while ((self.nag_time) and (self.status == "down")):
-            alert()
             time.sleep(self.nag_time)
         else:
-            alert()
+            if not channels:
+                channels = self.channel_set.all()
+
+            for channel in channels:
+                error = channel.notify(self)
+                if error not in ("", "no-op"):
+                    errors.append((channel, error))
+        return errors
 
     def get_status(self):
         if self.status in ("new", "paused"):
