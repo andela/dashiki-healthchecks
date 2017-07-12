@@ -5,8 +5,6 @@ from django.urls import reverse
 from hc.settings import BASE_DIR
 from django.contrib.auth.models import User
 
-# Create your tests here.
-
 
 class HelpVideosTestCase(TestCase):
 
