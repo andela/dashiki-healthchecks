@@ -26,6 +26,9 @@ def admin_required(func):
             return func(request)
         else:
             return HttpResponseForbidden()
+
+    wrap.__name__ = func.__name__
+    wrap.__doc__ = func.__doc__
     return wrap
 
 
