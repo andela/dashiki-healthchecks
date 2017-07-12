@@ -10,3 +10,4 @@ static/.DS_Store
 
 .idea
 htmlcov
+.vscode/
