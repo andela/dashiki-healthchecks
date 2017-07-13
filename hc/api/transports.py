@@ -216,3 +216,18 @@ class VictorOps(HttpTransport):
         }
 
         return self.post(self.channel.value, payload)
+
+
+class Telegram(HttpTransport):
+    url = "https://api.telegram.org/bot414884769:AAGL-NXVbmrYkARUvc8ENrLaBfk08Xo7HOw/sendMessage"
+
+    @staticmethod
+    def send_message(chat_id, text):
+        url = "https://api.telegram.org/bot414884769:AAGL-NXVbmrYkARUvc8ENrLaBfk08Xo7HOw/sendMessage"
+        params = {'chat_id': chat_id, 'text': text}
+        response = requests.post(url, params)
+        return response
+
+    def notify(self, check):
+        text = tmpl("telegram_message.html", check=check)
+        return self.send_message(self.channel.telegram_id, text)
