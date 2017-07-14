@@ -219,11 +219,10 @@ class VictorOps(HttpTransport):
 
 
 class Telegram(HttpTransport):
-    url = "https://api.telegram.org/bot414884769:AAGL-NXVbmrYkARUvc8ENrLaBfk08Xo7HOw/sendMessage"
 
     @staticmethod
     def send_message(chat_id, text):
-        url = "https://api.telegram.org/bot414884769:AAGL-NXVbmrYkARUvc8ENrLaBfk08Xo7HOw/sendMessage"
+        url = "https://api.telegram.org/bot%s/sendMessage" % settings.TELEGRAM_TOKEN
         params = {'chat_id': chat_id, 'text': text}
         response = requests.post(url, params)
         return response
