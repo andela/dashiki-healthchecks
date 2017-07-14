@@ -803,14 +803,9 @@ def add_telegram(request):
         channel.save()
 
         channel.assign_all_checks()
-        messages.success(request, "The Telegram integration has been added!")
+        messages.success(request, "Your Telegram integration has been added!")
         return redirect("hc-channels")
 
-    ctx = {
-        "chat_id": chat_id,
-        "chat_type": chat_type,
-        "chat_name": chat_name,
-        "bot_name": settings.TELEGRAM_BOT_NAME
-    }
+    chat = {"chat_id": chat_id}
 
-    return render(request, "integrations/add_telegram.html", ctx)
+    return render(request, "integrations/add_telegram.html", chat)
