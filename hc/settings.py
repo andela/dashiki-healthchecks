@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'django_extensions',
     'django_filters',
+    'ckeditor',
 
     'hc.accounts',
     'hc.api',
@@ -133,6 +134,15 @@ PUSHOVER_EMERGENCY_EXPIRATION = 86400
 # Pushbullet integration -- override these in local_settings
 PUSHBULLET_CLIENT_ID = None
 PUSHBULLET_CLIENT_SECRET = None
+
+# CKEditor
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': 300,
+    },
+}
 
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
