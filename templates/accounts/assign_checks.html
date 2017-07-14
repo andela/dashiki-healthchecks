@@ -1,0 +1,39 @@
+{% load compress staticfiles %}
+<div class="row">
+    <div class="col-xs-5">
+      <input
+        type="hidden"
+        name="email"
+        id="member-email" />
+        <select name="left_list" class="js-multiselect form-control" size="8" multiple="multiple">
+          {% for check in checks %}
+          <option value="{{ check.id }}"> {{ check.name }} </option>
+          {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-xs-2">
+        <button type="button" id="js_right_All_1" class="btn btn-block">
+          <i class="glyphicon glyphicon-forward"> &gt;&gt; </i>
+        </button>
+        <button type="button" id="js_right_Selected_1" class="btn btn-block">
+          <i class="glyphicon glyphicon-chevron-right"> &gt; </i>
+        </button>
+        <button type="button" id="js_left_Selected_1" class="btn btn-block">
+          <i class="glyphicon glyphicon-chevron-left"> &lt; </i>
+        </button>
+        <button type="button" id="js_left_All_1" class="btn btn-block">
+          <i class="glyphicon glyphicon-backward"> &lt;&lt; </i>
+        </button>
+    </div>
+
+    <div class="col-xs-5">
+        <select name="right_list" id="js_multiselect_to_1" class="form-control" size="8" multiple="multiple">
+          {% for check in assigned_checks %}
+          <option value="{{ check.id }}"> {{ check.name }} </option>
+          {% endfor %}
+        </select>
+    </div>
+</div>
+<script src="{% static 'js/profile.js' %}"></script>
+<script src="{% static 'js/multiselect.min.js' %}"></script>

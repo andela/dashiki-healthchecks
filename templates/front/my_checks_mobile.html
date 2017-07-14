@@ -85,6 +85,12 @@
                 class="btn btn-default timeout-grace">Change Period</a>
 
             <a href="{% url 'hc-log' check.code %}" class="btn btn-default">Log</a>
+
+            {% if current_user.id == check.user.id %}
+                <a href="{% url 'hc-priority' check.code %}" class="btn btn-default">
+                    Set priority <span class="label label-success">{{ check.total_priorities }}</span>
+                </a>
+            {% endif %}
         </div>
 
     </li>

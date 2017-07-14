@@ -65,6 +65,25 @@ class Check(models.Model):
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
 
+    def has_access(self, user):
+        if self.user.id == user.id:
+            return True
+
+        access_obj = CheckAccess.objects.filter(check_obj=self, user=user)
+
+        if access_obj:
+            return True
+        return False
+
+    def get_assigned_id(self, user):
+        access_obj = CheckAccess.objects.get(check_obj=self, user=user)
+        return access_obj.id
+
+    def assign_access(self, user):
+        if not CheckAccess.objects.filter(check_obj=self, user=user).count():
+            new_access = CheckAccess.objects.create(check_obj=self, user=user)
+            new_access.save()
+
     def name_then_code(self):
         if self.name:
             return self.name
@@ -148,6 +167,9 @@ class Check(models.Model):
 
     def total_priorities(self):
         return len(self.priority_set.all())
+
+    def __str__(self):
+        return "{}".format(self.name)
 
 
 class Ping(models.Model):
@@ -320,3 +342,11 @@ class Priority(models.Model):
         for priority in priorities:
             priority.status = status
             priority.save()
+
+
+class CheckAccess(models.Model):
+    check_obj = models.ForeignKey(Check, blank=False)
+    user = models.ForeignKey(User, blank=False)
+
+    def __str__(self):
+        return "{} -> {}".format(self.user, self.check_obj)

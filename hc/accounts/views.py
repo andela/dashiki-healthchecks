@@ -15,7 +15,7 @@ from hc.accounts.forms import (EmailPasswordForm, InviteTeamMemberForm,
                                RemoveTeamMemberForm, ReportSettingsForm,
                                SetPasswordForm, TeamNameForm)
 from hc.accounts.models import Profile, Member
-from hc.api.models import Channel, Check
+from hc.api.models import Channel, Check, CheckAccess
 from hc.lib.badges import get_badge_url
 
 
@@ -130,6 +130,22 @@ def check_token(request, username, token):
 
 
 @login_required
+def assign_checks(request, email):
+    assignee = User.objects.get(email=email)
+    query = Check.objects.filter(user=request.team.user).order_by("created")
+    checks = list(query)
+    checks = [check for check in checks if check.has_access(request.user)]
+    assignee_checks = [check for check in checks if check.has_access(assignee)]
+    checks = list(set(checks) - set(assignee_checks))
+    ctx = {
+        "checks": checks,
+        "assigned_checks": assignee_checks
+    }
+
+    return render(request, "accounts/assign_checks.html", ctx)
+
+
+@login_required
 def profile(request):
     profile = request.user.profile
     # Switch user back to its default team
@@ -186,6 +202,12 @@ def profile(request):
                 Member.objects.filter(team=profile,
                                       user=farewell_user).delete()
 
+                team_checks = list(Check.objects.filter(user=request.team.user))
+                for check in team_checks:
+                    if check.has_access(farewell_user):
+                        access_id = check.get_assigned_id(farewell_user)
+                        CheckAccess.objects.get(pk=access_id).delete()
+
                 messages.info(request, "%s removed from team!" % email)
         elif "set_team_name" in request.POST:
             if not profile.team_access_allowed:
@@ -196,6 +218,22 @@ def profile(request):
                 profile.team_name = form.cleaned_data["team_name"]
                 profile.save()
                 messages.success(request, "Team Name updated!")
+        elif "assign-checks" in request.POST:
+            email = request.POST.get('email')
+            assignee = User.objects.get(email=email)
+            checks_to_assign = request.POST.getlist('right_list')
+            unassigned_checks = request.POST.getlist('left_list')
+            check_obj_to_assign = [Check.objects.get(pk=value) for value in checks_to_assign]
+            check_obj_unassigned = [Check.objects.get(pk=value) for value in unassigned_checks]
+
+            for check in check_obj_to_assign:
+                if not check.has_access(assignee):
+                    check.assign_access(assignee)
+
+            for check in check_obj_unassigned:
+                if check.has_access(assignee):
+                    access_id = check.get_assigned_id(assignee)
+                    CheckAccess.objects.get(pk=access_id).delete()
 
     tags = set()
     for check in Check.objects.filter(user=request.team.user):
