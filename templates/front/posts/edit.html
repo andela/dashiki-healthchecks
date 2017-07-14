@@ -1,0 +1,18 @@
+{% extends "front/base_posts.html" %}
+{% load compress staticfiles %}
+
+{% block title %}
+    Blog - healthchecks.io
+{% endblock %}
+
+{% block posts_content %}
+    <h2>Edit Blog Post</h2>
+    <br/>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <br/>
+        <input type="submit" class="btn btn-primary save" value="Update"/>
+    </form>
+{% endblock %}
+

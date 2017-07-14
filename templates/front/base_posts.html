@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-3">
+
+    <ul class="docs-nav">
+        <li {% if section == "posts" %} class="active" {% endif %}>
+            <a href="{% url "hc-post" %}">LATEST POSTS</a>
+            {% if posts %}
+                <ul>
+                    {% for post in posts %}
+                        <li><a href="{% url "hc-show-post" post.slug %}">{{ post.title|truncatewords:3 }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <ul>
+                    <li><a href="#">No posts</a></li>
+                </ul>
+            {% endif %}
+        </li>
+        <li {% if section == "view-all" %} class="active" {% endif %}>
+            <a href="{% url "hc-all-posts" %}">VIEW ALL</a>
+        </li>
+        {% if request.user.is_authenticated %}
+            <li {% if section == "create-post" %} class="active" {% endif %}>
+                <a href="{% url "hc-add-post" %}">CREATE POST</a>
+            </li>
+        {% endif %}
+    </ul>
+
+    </div>
+    <div class="col-sm-9">
+        {% block posts_content %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "front/base_posts.html" %}
+{% load compress staticfiles %}
+
+{% block title %}
+    Blog - healthchecks.io
+{% endblock %}
+
+{% block posts_content %}
+    {% if all_posts %}
+        {% for post in all_posts %}
+            <a href="{% url "hc-show-post" post.slug %}">
+                <h2>{{ post.title }}</h2>
+            </a>
+            <h4>{{ post.user.last_name }} {{ post.user.first_name }}</h4>
+            <a href="{% url "hc-update-post" post.slug %}">Edit</a> |
+            <a href="{% url "hc-delete-post" post.slug %}">Delete</a>
+            <br/>
+        {% endfor %}
+    {% else %}
+        <h2>No posts at this time</h2>
+    {% endif %}
+{% endblock %}
