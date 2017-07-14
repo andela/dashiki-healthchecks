@@ -1,44 +1,65 @@
 {% extends "front/base_docs.html" %}
-{% load staticfiles %}
+{% load static %}
+{% load fontawesome %}
 
-
-{% block title %}Healthchecks FAQ's{% endblock %}
+{% block title %} Healthchecks FAQ's {% endblock %}
 
 {% block docs_content %}
-
 <h2>
   <b>FAQ's</b>
+  <hr/>
   {% if request.user.is_superuser %}
+    <a href="#" data-toggle="modal" data-target="#faq-cat-all" class="btn btn-sm btn-info">
+      FAQ Categories &nbsp;
+      <span class = "badge">{% fontawesome_icon 'list-alt' %} &nbsp; </span>
+    </a>
     <a href="#" data-toggle="modal" data-target="#add-faq" class="btn btn-sm btn-info pull-right">
-      Create FAQ &nbsp;<span class = "badge"> &#43;</span></a>
+      Create FAQ &nbsp;
+      <span class = "badge"> &#43;</span>
+    </a>
   {% endif %}
 </h2>
+
 <div class="panel-group wrap" id="accordion" role="tablist" aria-multiselectable="true">
-{% for category, faq_list in faqs.items %}
-  <h4>{{ category }}</h4><hr/>
-  {% for faq in faq_list %}
-      <div class="panel">
-        <div class="panel-heading" role="tab">
-          <h4 class="panel-title">
-        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ faq.id }}" aria-expanded="false">
-           {{ faq.title }}
-        </a>
-      </h4>
-        </div>
-        <div id="collapse{{ faq.id }}" class="panel-collapse collapse" role="tabpanel">
-          <div class="panel-body text-justify">
-             {{ faq.body | safe }}
-          </div>
-          {% if request.user.is_superuser %}
-            <div class="faq-well">
-              <a href="#" class="btn btn-small btn-danger">Delete</a>
-              <a href="#" class="btn btn-small btn-primary">Edit</a>
+  {% if not faqs %}
+    <div class="jumbotron text-center">
+      No FAQ's added so far!
+    </div>
+  {% else %}
+    {% for category, faq_list in faqs.items %}
+      <h4>{{ category }}</h4><hr/>
+      {% for faq in faq_list %}
+          <div class="panel">
+            <div class="panel-heading" role="tab">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ faq.id }}" aria-expanded="false">
+                  {{ faq.title }}
+                </a>
+              </h4>
             </div>
-          {% endif %}
-        </div>
-      </div>
-  {% endfor %}
-{% endfor %}
-  </div>
-  {% include "front/faq_modal.html" %}
+            <div id="collapse{{ faq.id }}" class="panel-collapse collapse" role="tabpanel">
+              <div class="panel-body text-justify">
+                 {{ faq.body | safe }}
+              </div>
+              {% if request.user.is_superuser %}
+                <div class="faq-well">
+                    <div class="pull-right">
+                      <a href="{% url 'hc-faq-delete' id=faq.id %}" class="btn btn-small btn-danger">
+                        {% fontawesome_icon 'remove' %}
+                      </a>
+                      <a href="#" uri="{% url 'hc-faq-edit' id=faq.id %}" class="btn btn-small btn-primary btn-faq__edit">
+                        {% fontawesome_icon 'pencil' %}
+                      </a>
+                    </div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+</div>
+{% include "front/faq_modal.html" %}
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="{% static 'js/faq_modals.js' %}"></script>
 {% endblock %}
