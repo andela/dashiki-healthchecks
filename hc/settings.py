@@ -159,6 +159,11 @@ CKEDITOR_CONFIGS = {
     },
 }
 
+# Telegram integration
+TELEGRAM_BOT_NAME = os.environ.get("TELEGRAM_BOT_NAME")
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+
+
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
 else:
