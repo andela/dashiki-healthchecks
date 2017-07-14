@@ -25,6 +25,7 @@ class ProfileTestCase(BaseTestCase):
         # Assert that the token is set
         self.assertTrue(token is not None)
         self.assertTrue(len(token) > 0)
+
         # Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox) - initial_mail_count, 1)
 

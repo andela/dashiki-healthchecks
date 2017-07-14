@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     {% load compress staticfiles %}
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
 
@@ -30,6 +31,7 @@
     <link rel="stylesheet" href="{% static 'css/add_pushover.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/settings.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/bootstrap-switch.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/faq_css.css' %}" type="text/css">
     {% endcompress %}
 </head>
 <body class="page-{{ page }}">
@@ -167,12 +169,12 @@
         </div>
     </footer>
 
-
     {% block scripts %}
     {% compress js %}
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     {% endcompress %}
     {% endblock %}
+    <script src="{% static 'js/olark-live-chat.js' %}"></script>
 </body>
 </html>

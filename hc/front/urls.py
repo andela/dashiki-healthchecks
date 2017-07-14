@@ -1,6 +1,7 @@
 from django.conf.urls import include, url
 
 from hc.front import views
+from hc.help_videos import urls as help_videos_urls
 
 check_urls = [
     url(r'^name/$', views.update_name, name="hc-update-name"),
@@ -39,7 +40,18 @@ urlpatterns = [
 
     url(r'^docs/$', views.docs, name="hc-docs"),
     url(r'^docs/api/$', views.docs_api, name="hc-docs-api"),
+    url(r'^docs/help/$', views.docs_help, name="hc-docs-help"),
+    url(r'^docs/faq/$', views.docs_faq, name="hc-docs-faq"),
+    url(r'^docs/faq/save/$', views.save_faq, name="hc-save-faq"),
+    url(r'^docs/faq/save/(?P<id>\d+)/$', views.save_faq, name="hc-save-faq-edit"),
+    url(r'^docs/faq/(?P<id>\d+)/$', views.faq_edit, name="hc-faq-edit"),
+    url(r'^docs/faq/del/(?P<id>\d+)/$', views.delete_faq, name="hc-faq-delete"),
+    url(r'^docs/faq/cat/(?P<id>\d+)/$', views.faq_cat_edit, name="hc-cat-edit"),
+    url(r'^docs/faq/cat/save/$', views.save_category, name="hc-save-cat"),
+    url(r'^docs/faq/cat/save/(?P<id>\d+)/$', views.save_category, name="hc-save-cat-edit"),
+    url(r'^docs/faq/cat/del/(?P<id>\d+)/$', views.delete_cat, name="hc-cat-delete"),
     url(r'^about/$', views.about, name="hc-about"),
     url(r'^privacy/$', views.privacy, name="hc-privacy"),
     url(r'^terms/$', views.terms, name="hc-terms"),
+    url(r'^help/videos/', include(help_videos_urls))
 ]

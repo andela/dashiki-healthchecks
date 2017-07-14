@@ -42,7 +42,11 @@ INSTALLED_APPS = (
     'hc.accounts',
     'hc.api',
     'hc.front',
-    'hc.payments'
+    'hc.payments',
+    'hc.help_videos',
+    'crispy_forms',
+    'ckeditor',
+    'fontawesome'
 )
 
 MIDDLEWARE = (
@@ -95,6 +99,88 @@ DATABASES = {}
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'] = db_from_env
 
+# Default database engine is SQLite. So one can just check out code,
+# install requirements.txt and do manage.py runserver and it works
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': './hc.sqlite',
+    }
+}
+
+# You can switch database engine to postgres or mysql using environment
+# variable 'DB'. Travis CI does this.
+if os.environ.get("DB") == "postgres":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'hc',
+            'USER': 'postgres',
+            'TEST': {'CHARSET': 'UTF8'}
+        }
+    }
+
+if os.environ.get("DB") == "mysql":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'USER': 'root',
+            'NAME': 'hc',
+            'TEST': {'CHARSET': 'UTF8'}
+        }
+    }
+
+if os.environ.get("ENVIRONMENT") == "staging":
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(db_from_env)
+
+if os.environ.get("ENVIRONMENT") == "production":
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(db_from_env)
+
+if not DEBUG:  # pragma: no cover
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(db_from_env)
+
+DATABASES = {}
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'] = db_from_env
+
+# Default database engine is SQLite. So one can just check out code,
+# install requirements.txt and do manage.py runserver and it works
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': './hc.sqlite',
+    }
+}
+
+# You can switch database engine to postgres or mysql using environment
+# variable 'DB'. Travis CI does this.
+if os.environ.get("DB") == "postgres":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'hc',
+            'USER': 'postgres',
+            'TEST': {'CHARSET': 'UTF8'}
+        }
+    }
+
+if os.environ.get("DB") == "mysql":
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'USER': 'root',
+            'NAME': 'hc',
+            'TEST': {'CHARSET': 'UTF8'}
+        }
+    }
+
+if not DEBUG:  # pragma: no cover
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(db_from_env)
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -133,6 +219,10 @@ PUSHOVER_EMERGENCY_EXPIRATION = 86400
 # Pushbullet integration -- override these in local_settings
 PUSHBULLET_CLIENT_ID = None
 PUSHBULLET_CLIENT_SECRET = None
+
+# setup media upload path
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
