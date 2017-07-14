@@ -22,3 +22,7 @@ deployment:
     branch: develop
     heroku:
       appname: staging-dashiki-hc
+  production:
+    branch: master
+    heroku:
+      appname: production-dashiki-hc
