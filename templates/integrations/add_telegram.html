@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load compress humanize staticfiles hc_extras %}
+
+{% block title %}Notification Channels - healthchecks.io{% endblock %}
+
+
+{% block content %}
+<div class="row">
+<div class="col-sm-12">
+    <h1>Telegram</h1>
+
+    <p>Get a telegram message when check goes up or down.</p>
+
+    <p>
+        <strong>Tip:</strong>
+        Add HealthChecksBot to a telegram group to notify multiple people at the same time.
+    </p>
+
+    <p>
+        <strong>Confirmation needed.</strong>
+        After adding the HealthChecksBot to your group or initiating a personal chat with the bot,
+        a link will be sent to you in the chat. Please click that chat to confirm your subscription to alerts.
+    </p>
+
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{% compress js %}
+<script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% endcompress %}
+{% endblock %}
