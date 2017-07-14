@@ -17,8 +17,9 @@ from django.utils.six.moves.urllib.parse import urlencode
 
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, PRIORITY_LEVELS, Channel, Check, Ping, Priority
+from hc.front.models import Post
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
+                            TimeoutForm, PostForm)
 
 
 # from itertools recipes:
@@ -608,3 +609,90 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
+
+def posts(request):
+    posts = Post.objects.all().order_by("-created")
+    ctx = {
+        "page": "view-all-posts",
+        "section": "view-all-posts",
+        "posts": posts[:5],
+        "all_posts": posts
+    }
+    return render(request, "front/posts/index.html", ctx)
+
+
+def latest_post(request):
+    posts = Post.objects.all().order_by("-created")[:5]
+    ctx = {
+        "page": "posts",
+        "section": "posts",
+        "posts": posts,
+        "post": posts.first()
+    }
+    return render(request, "front/posts/show.html", ctx)
+
+
+def show_post(request, slug):
+    ctx = {
+        "page": "show-post",
+        "section": "show-post",
+        "posts": Post.objects.all().order_by("-created")[:5],
+        "post": Post.objects.filter(slug=slug).first()
+    }
+    return render(request, "front/posts/show.html", ctx)
+
+
+@login_required
+def add_post(request):
+    if request.method == "GET":
+        form = PostForm()
+        ctx = {
+            "page": "create-post",
+            "section": "create-post",
+            "form": form,
+            "posts": Post.objects.all().order_by("-created")[:5]
+        }
+        return render(request, "front/posts/create.html", ctx)
+
+    if request.method == "POST":
+        post = Post()
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post.title = form.cleaned_data["title"]
+            post.body = form.cleaned_data["body"]
+            post.user = request.user
+            post.save()
+            return redirect("hc-post")
+
+
+@login_required
+def edit_post(request, slug):
+    post = Post.objects.filter(slug=slug).first()
+
+    if request.method == "GET":
+        form = PostForm({"title": post.title, "body": post.body})
+        ctx = {
+            "page": "edit-post",
+            "section": "edit-post",
+            "form": form,
+            "posts": Post.objects.all().order_by("-created")[:5]
+        }
+        return render(request, "front/posts/edit.html", ctx)
+
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post.title = form.cleaned_data["title"]
+            post.body = form.cleaned_data["body"]
+            post.save()
+        return redirect("hc-show-post", post.slug)
+
+
+@login_required
+def delete_post(request, slug):
+    post = Post.objects.filter(slug=slug).first()
+
+    if post:
+        post.delete()
+    return redirect("hc-all-posts")
