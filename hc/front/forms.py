@@ -1,4 +1,7 @@
+from ckeditor.widgets import CKEditorWidget
+
 from django import forms
+
 from hc.api.models import Channel
 
 
@@ -41,3 +44,8 @@ class AddWebhookForm(forms.Form):
 
     def get_value(self):
         return "{value_down}\n{value_up}".format(**self.cleaned_data)
+
+
+class PostForm(forms.Form):
+    title = forms.CharField(max_length=256, required=True, label="Title")
+    body = forms.CharField(widget=CKEditorWidget(), required=True, label="Body")
