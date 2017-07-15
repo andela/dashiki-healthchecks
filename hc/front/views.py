@@ -1,3 +1,4 @@
+import os
 from collections import Counter
 from datetime import timedelta as td
 from itertools import tee
@@ -7,6 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count
 from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -612,11 +614,20 @@ def terms(request):
 
 
 def posts(request):
-    posts = Post.objects.all().order_by("-created")
+    all_posts = Post.objects.all().order_by("-created")
+    paginator = Paginator(all_posts, os.environ.get("PER_PAGE", 10))
+    page = request.GET.get("page")
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
     ctx = {
         "page": "view-all-posts",
         "section": "view-all-posts",
-        "posts": posts[:5],
+        "posts": all_posts[:5],
         "all_posts": posts
     }
     return render(request, "front/posts/index.html", ctx)

@@ -16,6 +16,29 @@
             <a href="{% url "hc-delete-post" post.slug %}">Delete</a>
             <br/>
         {% endfor %}
+
+        <br/>
+        <div class="pagination">
+            <span class="step-links">
+                {% if all_posts.has_previous %}
+                    <a href="?page={{ all_posts.previous_page_number }}"
+                       class="btn btn-primary">
+                        previous
+                    </a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ all_posts.number }} of {{ all_posts.paginator.num_pages }}
+                </span>
+
+                {% if all_posts.has_next %}
+                    <a href="?page={{ all_posts.next_page_number }}"
+                       class="btn btn-primary">
+                        next
+                    </a>
+                {% endif %}
+            </span>
+        </div>
     {% else %}
         <h2>No posts at this time</h2>
     {% endif %}
