@@ -615,7 +615,7 @@ def terms(request):
 
 def posts(request):
     all_posts = Post.objects.all().order_by("-created")
-    paginator = Paginator(all_posts, os.environ.get("PER_PAGE", 10))
+    paginator = Paginator(all_posts, os.environ.get("PER_PAGE", 9))
     page = request.GET.get("page")
     try:
         posts = paginator.page(page)
