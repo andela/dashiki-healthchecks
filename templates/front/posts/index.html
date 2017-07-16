@@ -7,39 +7,55 @@
 
 {% block posts_content %}
     {% if all_posts %}
-        <h2>All posts</h2>
-        {% for post in all_posts %}
-            <a href="{% url "hc-show-post" post.slug %}">
-                <h4>{{ post.title }}</h4>
-            </a>
-            <h4>{{ post.user.last_name }} {{ post.user.first_name }}</h4>
-            <a href="{% url "hc-update-post" post.slug %}">Edit</a> |
-            <a href="{% url "hc-delete-post" post.slug %}">Delete</a>
-            <br/>
-        {% endfor %}
+        <div class="row">
+            <div class="col-sm-8">
+                <h2 class="list_heading">All posts</h2>
+            </div>
+            <div class="col-sm-4 align-right paginate">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if all_posts.has_previous %}
+                            <a href="?page={{ all_posts.previous_page_number }}"
+                               class="btn btn-primary">
+                                <span class="glyphicon glyphicon-arrow-left"></span> previous
+                            </a>
+                        {% endif %}
 
-        <br/>
-        <div class="pagination">
-            <span class="step-links">
-                {% if all_posts.has_previous %}
-                    <a href="?page={{ all_posts.previous_page_number }}"
-                       class="btn btn-primary">
-                        previous
-                    </a>
-                {% endif %}
+                        <span class="current">
+                            Page {{ all_posts.number }} of {{ all_posts.paginator.num_pages }}
+                        </span>
 
-                <span class="current">
-                    Page {{ all_posts.number }} of {{ all_posts.paginator.num_pages }}
-                </span>
-
-                {% if all_posts.has_next %}
-                    <a href="?page={{ all_posts.next_page_number }}"
-                       class="btn btn-primary">
-                        next
-                    </a>
-                {% endif %}
-            </span>
+                        {% if all_posts.has_next %}
+                            <a href="?page={{ all_posts.next_page_number }}"
+                               class="btn btn-primary">
+                                next
+                            </a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
         </div>
+
+        {% for post in all_posts %}
+            <div class="post">
+                <a href="{% url "hc-show-post" post.slug %}">
+                    <h4>{{ post.title }}</h4>
+                </a>
+                <h6 class="author">
+                    {{ post.user.last_name }} {{ post.user.first_name }} | Published: {{ post.created|date }}
+                </h6>
+                <a href="{% url "hc-update-post" post.slug %}" class="post-action">
+                    Edit
+                </a> &middot;
+                <a href="{% url "hc-publish-post" post.slug %}?state={% if post.publish %}false{% else %}true{% endif %}"
+                   class="post-action">
+                    {% if post.publish %}Unpublish{% else %}Publish{% endif %}
+                </a> &middot;
+                <a href="{% url "hc-delete-post" post.slug %}" class="post-action">
+                    Delete
+                </a>
+            </div>
+        {% endfor %}
     {% else %}
         <h2>No posts at this time</h2>
     {% endif %}

@@ -615,7 +615,7 @@ def terms(request):
 
 def posts(request):
     all_posts = Post.objects.all().order_by("-created")
-    paginator = Paginator(all_posts, os.environ.get("PER_PAGE", 9))
+    paginator = Paginator(all_posts, os.environ.get("PER_PAGE", 6))
     page = request.GET.get("page")
     try:
         posts = paginator.page(page)
@@ -706,4 +706,15 @@ def delete_post(request, slug):
 
     if post:
         post.delete()
+    return redirect("hc-all-posts")
+
+
+@login_required
+def publish_post(request, slug):
+    post = Post.objects.filter(slug=slug).first()
+    state = request.GET.get("state")
+
+    if post:
+        post.publish = (state == "true")
+        post.save()
     return redirect("hc-all-posts")

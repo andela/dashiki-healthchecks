@@ -20,7 +20,7 @@
                 </ul>
             {% endif %}
         </li>
-        <li {% if section == "view-all" %} class="active" {% endif %}>
+        <li {% if section == "view-all-posts" %} class="active" {% endif %}>
             <a href="{% url "hc-all-posts" %}">VIEW ALL</a>
         </li>
         {% if request.user.is_authenticated %}

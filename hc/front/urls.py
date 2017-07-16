@@ -5,6 +5,7 @@ from hc.front import views
 post_urls = [
     url(r'^$', views.show_post, name="hc-show-post"),
     url(r'^edit/$', views.edit_post, name="hc-update-post"),
+    url(r'^publish/$', views.publish_post, name="hc-publish-post"),
     url(r'^delete/$', views.delete_post, name="hc-delete-post")
 ]
 
@@ -53,4 +54,3 @@ urlpatterns = [
     url(r'^privacy/$', views.privacy, name="hc-privacy"),
     url(r'^terms/$', views.terms, name="hc-terms"),
 ]
-

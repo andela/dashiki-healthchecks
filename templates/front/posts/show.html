@@ -7,11 +7,17 @@
 
 {% block posts_content %}
     {% if posts %}
-        <h2>{{ post.title }}</h2>
-        <h4>{{ post.user.last_name }} {{ post.user.first_name }}</h4>
-        <p class="blog-content">
-            {{ post.body|safe }}
-        </p>
+        <div class="single-post">
+            <h2 class="post-heading">
+                {{ post.title }}
+            </h2>
+            <h4 class="post-author">
+                {{ post.user.last_name }} {{ post.user.first_name }} | Published: {{ post.created|date }}
+            </h4>
+            <p class="post-content">
+                {{ post.body|safe }}
+            </p>
+        </div>
     {% else %}
         <h2>No posts at this time</h2>
     {% endif %}
