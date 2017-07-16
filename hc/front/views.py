@@ -614,7 +614,10 @@ def terms(request):
 
 
 def posts(request):
-    all_posts = Post.objects.all().order_by("-created")
+    if request.user.is_authenticated():
+        all_posts = Post.objects.all().order_by("-created")
+    else:
+        all_posts = Post.objects.filter(publish=True).order_by("-created")
     paginator = Paginator(all_posts, os.environ.get("PER_PAGE", 6))
     page = request.GET.get("page")
     try:
@@ -634,7 +637,10 @@ def posts(request):
 
 
 def latest_post(request):
-    posts = Post.objects.all().order_by("-created")[:5]
+    if request.user.is_authenticated():
+        posts = Post.objects.all().order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
     ctx = {
         "page": "posts",
         "section": "posts",
@@ -645,10 +651,14 @@ def latest_post(request):
 
 
 def show_post(request, slug):
+    if request.user.is_authenticated():
+        posts = Post.objects.all().order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
     ctx = {
         "page": "show-post",
         "section": "show-post",
-        "posts": Post.objects.all().order_by("-created")[:5],
+        "posts": posts,
         "post": Post.objects.filter(slug=slug).first()
     }
     return render(request, "front/posts/show.html", ctx)

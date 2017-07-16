@@ -9,7 +9,7 @@ class PostsTestCase(BaseTestCase):
         super(PostsTestCase, self).setUp()
 
     def test_user_can_view_all_blog_posts(self):
-        post = Post(user=self.alice, title="Post Title", body="Post Body")
+        post = Post(user=self.alice, title="Post Title", body="Post Body", publish=True)
         post.save()
 
         response = self.client.get(reverse("hc-post"))
