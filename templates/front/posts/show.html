@@ -9,8 +9,8 @@
     {% if posts %}
         <h2>{{ post.title }}</h2>
         <h4>{{ post.user.last_name }} {{ post.user.first_name }}</h4>
-        <p>
-            {{ post.body }}
+        <p class="blog-content">
+            {{ post.body|safe }}
         </p>
     {% else %}
         <h2>No posts at this time</h2>

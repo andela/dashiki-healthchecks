@@ -7,9 +7,10 @@
 
 {% block posts_content %}
     {% if all_posts %}
+        <h2>All posts</h2>
         {% for post in all_posts %}
             <a href="{% url "hc-show-post" post.slug %}">
-                <h2>{{ post.title }}</h2>
+                <h4>{{ post.title }}</h4>
             </a>
             <h4>{{ post.user.last_name }} {{ post.user.first_name }}</h4>
             <a href="{% url "hc-update-post" post.slug %}">Edit</a> |
