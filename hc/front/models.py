@@ -1,3 +1,5 @@
+from tinymce.models import HTMLField
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -7,7 +9,7 @@ from hc.front.time_stamped_model import TimeStampedModel
 class Post(TimeStampedModel):
     user = models.ForeignKey(User, blank=True, null=False, related_name="posts")
     title = models.CharField(max_length=256, null=False)
-    body = models.TextField(null=True)
+    body = HTMLField()
     slug = models.CharField(max_length=400, null=False, unique=True)
     publish = models.BooleanField(default=False)
 
