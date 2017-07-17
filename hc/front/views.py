@@ -610,6 +610,7 @@ def privacy(request):
 def terms(request):
     return render(request, "front/terms.html", {})
 
+
 def docs_faq(request):
     faq_category = FaqCategory.objects.all().order_by('category')
     result = {}
