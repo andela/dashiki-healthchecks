@@ -2,6 +2,7 @@ import os
 from collections import Counter
 from datetime import timedelta as td
 from itertools import tee
+import json
 
 import requests
 from django.conf import settings
@@ -12,15 +13,23 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count
 from django.db.models import Q
 from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden
+from django.core import signing
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import (Http404, HttpResponse, HttpResponseBadRequest,
+                         HttpResponseForbidden)
 
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, PRIORITY_LEVELS, Channel, Check, Ping, Priority
 from hc.front.models import Post
+from hc.api.transports import Telegram
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm, PostForm)
 
@@ -753,3 +762,50 @@ def publish_post(request, slug):
             post.publish = (state == "true")
             post.save()
     return redirect("hc-all-posts")
+
+@csrf_exempt
+@require_POST
+def subscribe_to_telegram_bot(request):
+    try:
+        response = json.loads(request.body.decode("utf-8"))
+    except ValueError:
+        return HttpResponseBadRequest()
+
+    if "/start" not in response["message"]["text"]:
+        print("Start command: ", response["message"]["text"])
+        return HttpResponse()
+
+    chat = response["message"]["chat"]
+    name = max(chat.get("title", ""), chat.get("username", ""))
+
+    invite = render_to_string("integrations/telegram_invite.html", {
+        "qs": signing.dumps((chat["id"], chat["type"], name)), "site_root": settings.SITE_ROOT
+    })
+
+    Telegram.confirm_subscription(chat["id"], invite)
+    return HttpResponse()
+
+
+@login_required
+def add_telegram(request):
+    chat_id, chat_type, chat_name = None, None, None
+    qs = request.META["QUERY_STRING"]
+    if qs:
+        chat_id, chat_type, chat_name = signing.loads(qs, max_age=600)
+
+    if request.method == "POST":
+        channel = Channel(user=request.team.user, kind="telegram")
+        channel.value = json.dumps({
+            "id": chat_id,
+            "type": chat_type,
+            "name": chat_name
+        })
+        channel.save()
+
+        channel.assign_all_checks()
+        messages.success(request, "Your Telegram integration has been added!")
+        return redirect("hc-channels")
+
+    chat = {"chat_id": chat_id}
+
+    return render(request, "integrations/add_telegram.html", chat)
