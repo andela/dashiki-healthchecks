@@ -5,6 +5,7 @@
 div.post {
     padding-bottom: 0.9em;
     font-size: large;
+    border-bottom: 1px gainsboro solid;
 }
 
 div.paginate {
@@ -15,8 +16,14 @@ a.post-action {
     font-size: small;
 }
 
-a.edit-post {
+.edit-post > div, .edit-post > a {
+    display: inline-block;
+    padding: 0 10px 0 10px;
+    margin-left: .5em;
     float: right;
+}
+
+.edit-post {
     font-size: large;
     text-decoration: none;
     cursor: pointer;
@@ -43,4 +50,10 @@ p.post-content {
 div.single-post > p {
     font-size: large;
     padding-left: 5px;
+}
+
+.social_media > div {
+    width: 20px;
+    display: inline-block;
+    margin-left: 1em;
 }
