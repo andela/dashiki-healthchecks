@@ -66,11 +66,14 @@ var nagSlider = document.getElementById("nag-slider");
         connect: "lower",
         range: {
             'min': 60,
+            '25%': 1800,
+            '50%': 43200,
+            '75%': 86400,
             'max': 604800,
         },
         pips: {
             mode: 'values',
-            values: [60, 604800],
+            values: [60, 1800, 43200, 86400, 604800],
             density: 4,
             format: {
                 to: secsToText,
