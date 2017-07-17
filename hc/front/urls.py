@@ -30,7 +30,7 @@ channel_urls = [
     url(r'^add_pushbullet/$', views.add_pushbullet, name="hc-add-pushbullet"),
     url(r'^add_pushover/$', views.add_pushover, name="hc-add-pushover"),
     url(r'^add_victorops/$', views.add_victorops, name="hc-add-victorops"),
-    url(r'^telegram/bot/$', views.subscribe_to_telegram_bot),
+    url(r'^telegram/subscribe/$', views.subscribe_to_telegram_bot, name="hc-subscribe-telegram"),
     url(r'^add_telegram/$', views.add_telegram, name="hc-add-telegram"),
     url(r'^([\w-]+)/checks/$', views.channel_checks, name="hc-channel-checks"),
     url(r'^([\w-]+)/remove/$', views.remove_channel, name="hc-remove-channel"),
