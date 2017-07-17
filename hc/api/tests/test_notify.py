@@ -1,5 +1,4 @@
 import json
-import requests
 
 from django.core import mail
 from django.test import override_settings
@@ -259,31 +258,31 @@ class NotifyTestCase(BaseTestCase):
     def test_telegram_subscription(self, mock_post, mock_loads):
         chat_id = 370353648
         data_from_telegram = {
-           "update_id": 496938208,
-           "message": {
-              "message_id": 95,
-              "from": {
-                 "id": chat_id,
-                 "first_name": "Edwin",
-                 "last_name": "Kato",
-                 "language_code": "en-US"
-              },
-              "chat": {
-                 "id": chat_id,
-                 "first_name": "Edwin",
-                 "last_name": "Kato",
-                 "type": "private"
-              },
-              "date": 1500289821,
-              "text": "/start",
-              "entities": [
-                 {
-                    "type": "bot_command",
-                    "offset": 0,
-                    "length": 6
-                 }
-              ]
-           }
+            "update_id": 496938208,
+            "message": {
+                "message_id": 95,
+                "from": {
+                    "id": chat_id,
+                    "first_name": "Edwin",
+                    "last_name": "Kato",
+                    "language_code": "en-US"
+                },
+                "chat": {
+                    "id": chat_id,
+                    "first_name": "Edwin",
+                    "last_name": "Kato",
+                    "type": "private"
+                },
+                "date": 1500289821,
+                "text": "/start",
+                "entities": [
+                    {
+                        "type": "bot_command",
+                        "offset": 0,
+                        "length": 6
+                    }
+                ]
+            }
         }
 
         chat = data_from_telegram["message"]["chat"]
@@ -301,4 +300,3 @@ class NotifyTestCase(BaseTestCase):
         mock_loads.return_value = data_from_telegram
         self.client.post(reverse("hc-subscribe-telegram"), data=data_from_telegram)
         mock_post.assert_called_once_with(telegram_end_point, payload)
-
