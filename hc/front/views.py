@@ -772,17 +772,17 @@ def subscribe_to_telegram_bot(request):
         return HttpResponseBadRequest()
 
     if "/start" not in response["message"]["text"]:
+        print("Start command: ", response["message"]["text"])
         return HttpResponse()
 
     chat = response["message"]["chat"]
     name = max(chat.get("title", ""), chat.get("username", ""))
 
     invite = render_to_string("integrations/telegram_invite.html", {
-        "qs": signing.dumps((chat["id"], chat["type"], name))
+        "qs": signing.dumps((chat["id"], chat["type"], name)), "site_root": settings.SITE_ROOT
     })
-    print("Chat id:" + str(chat["id"]))
 
-    Telegram.send_message(chat["id"], invite)
+    Telegram.confirm_subscription(chat["id"], invite)
     return HttpResponse()
 
 
