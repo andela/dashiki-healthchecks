@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count
+from django.db.models import Q
 from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -614,10 +615,13 @@ def terms(request):
 
 
 def posts(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_superuser:
         all_posts = Post.objects.all().order_by("-created")
+    elif request.user.is_authenticated():
+        all_posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")
     else:
         all_posts = Post.objects.filter(publish=True).order_by("-created")
+
     paginator = Paginator(all_posts, os.environ.get("PER_PAGE", 6))
     page = request.GET.get("page")
     try:
@@ -637,10 +641,13 @@ def posts(request):
 
 
 def latest_post(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_superuser:
         posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
     else:
         posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
     ctx = {
         "page": "posts",
         "section": "posts",
@@ -651,10 +658,13 @@ def latest_post(request):
 
 
 def show_post(request, slug):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_superuser:
         posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
     else:
         posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
     ctx = {
         "page": "show-post",
         "section": "show-post",
@@ -666,13 +676,20 @@ def show_post(request, slug):
 
 @login_required
 def add_post(request):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
     if request.method == "GET":
         form = PostForm()
         ctx = {
             "page": "create-post",
             "section": "create-post",
             "form": form,
-            "posts": Post.objects.all().order_by("-created")[:5]
+            "posts": posts
         }
         return render(request, "front/posts/create.html", ctx)
 
@@ -689,6 +706,13 @@ def add_post(request):
 
 @login_required
 def edit_post(request, slug):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
     post = Post.objects.filter(slug=slug).first()
 
     if request.method == "GET":
@@ -697,7 +721,7 @@ def edit_post(request, slug):
             "page": "edit-post",
             "section": "edit-post",
             "form": form,
-            "posts": Post.objects.all().order_by("-created")[:5]
+            "posts": posts
         }
         return render(request, "front/posts/edit.html", ctx)
 
@@ -721,10 +745,11 @@ def delete_post(request, slug):
 
 @login_required
 def publish_post(request, slug):
-    post = Post.objects.filter(slug=slug).first()
-    state = request.GET.get("state")
+    if request.user.is_superuser:
+        post = Post.objects.filter(slug=slug).first()
+        state = request.GET.get("state")
 
-    if post:
-        post.publish = (state == "true")
-        post.save()
+        if post:
+            post.publish = (state == "true")
+            post.save()
     return redirect("hc-all-posts")
