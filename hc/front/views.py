@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Count
-from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden
+from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -18,7 +18,8 @@ from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, PRIORITY_LEVELS, Channel, Check, Ping, Priority
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
+                            TimeoutForm, AddFaqForm, AddFaqCategoryForm)
+from hc.front.models import (FaqCategory, FaqItem)
 
 
 # from itertools recipes:
@@ -608,3 +609,107 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
+def docs_faq(request):
+    faq_category = FaqCategory.objects.all().order_by('category')
+    result = {}
+    form = AddFaqForm()
+    form_cat = AddFaqCategoryForm()
+    for category in faq_category:
+        faq_list = list(FaqItem.objects.filter(category=category).order_by('title'))
+        if faq_list:
+            result[category] = faq_list
+    ctx = {
+        "page": "docs_faq",
+        "faqs": result,
+        "form": form,
+        "form_cat": form_cat,
+        "faq_cats": faq_category
+    }
+
+    return render(request, "front/docs_faq.html", ctx)
+
+
+@login_required
+def save_faq(request, id=None):
+    if request.method == 'POST':
+        if id:
+            faq = FaqItem.objects.get(pk=id)
+            form = AddFaqForm(data=request.POST, instance=faq)
+        else:
+            form = AddFaqForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+    return redirect("hc-docs-faq")
+
+
+@login_required
+def faq_edit(request, id):
+    faq = FaqItem.objects.get(pk=id)
+    form = AddFaqForm(instance=faq)
+    ctx = {
+        "page": "faq_edit",
+        "edit": True,
+        "faq_id": faq.id,
+        "form": form
+    }
+    return render(request, "front/edit_faq.html", ctx)
+
+
+@login_required
+def delete_faq(request, id):
+    if request.method == 'GET':
+        if id:
+            FaqItem.objects.filter(pk=id).delete()
+            return redirect("hc-docs-faq")
+        else:
+            return HttpResponse("Operation not allowed")  # pragma: no cover
+
+
+@login_required
+def save_category(request, id=None):
+    if request.method == 'POST':
+        if id:
+            faq_category = FaqCategory.objects.get(pk=id)
+            form = AddFaqCategoryForm(data=request.POST, instance=faq_category)
+        else:
+            form = AddFaqCategoryForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+    return redirect("hc-docs-faq")
+
+
+@login_required
+def faq_cat_edit(request, id=None):
+    faq_category = FaqCategory.objects.get(pk=id)
+    form = AddFaqCategoryForm(instance=faq_category)
+    ctx = {
+        "page": "faq_cat_edit",
+        "edit": True,
+        "cat_id": faq_category.id,
+        "form": form
+    }
+    return render(request, "front/edit_cat.html", ctx)
+
+
+@login_required
+def delete_cat(request, id=None):
+    if request.method == 'GET':
+        if id:
+            FaqCategory.objects.filter(pk=id).delete()
+            return redirect("hc-docs-faq")
+        else:
+            return HttpResponse(u'Operation not allowed')  # pragma: no cover
+
+
+def docs_help(request):
+    ctx = {
+        "page": "docs",
+        "section": "help",
+        "SITE_ROOT": settings.SITE_ROOT,
+        "PING_ENDPOINT": settings.PING_ENDPOINT,
+        "default_timeout": int(DEFAULT_TIMEOUT.total_seconds()),
+        "default_grace": int(DEFAULT_GRACE.total_seconds())
+    }
+
+    return render(request, "front/docs_help.html", ctx)

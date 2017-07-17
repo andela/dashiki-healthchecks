@@ -1,0 +1,105 @@
+{% load fontawesome %}
+{% load static %}
+
+<!-- Modal showing All FAQ Categories -->
+<div id="faq-cat-all" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">FAQ Categories</h4>
+        <a href="#" data-toggle="modal" data-target="#add-cat" class="btn btn-small btn-primary pull-right">
+          {% fontawesome_icon 'plus' %} Add Category
+        </a>
+      </div>
+      <div class="modal-body">
+        <table class="table table-responsive table-hover table-striped">
+          {% for category in faq_cats %}
+            <tr>
+              <td>
+                {{ category }}
+              </td>
+              <td width="100">
+                <a href="{% url 'hc-cat-delete' id=category.id %}" class="btn btn-small btn-danger">
+                  {% fontawesome_icon 'remove' %}
+                </a>
+                <a href="#" uri="{% url 'hc-cat-edit' id=category.id %}" class="btn btn-small btn-primary btn-cat__edit">
+                  {% fontawesome_icon 'pencil' %}
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for creating a new FAQ Category -->
+<div id="add-cat" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add Category</h4>
+      </div>
+      <div class="modal-body">
+        <form action="{% if edit %}{% url 'hc-save-cat-edit' id=cat_id %} {% else %} {% url 'hc-save-cat' %} {% endif %}" method="post">
+        {% csrf_token %}
+        {{ form_cat.as_p }}
+        <input id="faq-cat-submit" type="submit" class="btn btn-sm btn-info" value="Save"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for editing an FAQ Category -->
+<div id="edit-cat__modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit FAQ Category</h4>
+      </div>
+      <div class="modal-body">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for editing an FAQ -->
+<div id="edit-faq__modal" class="modal fade" role="dialog">
+  <div class="modal-dialog width870">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit FAQ</h4>
+      </div>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for creating a new FAQ -->
+<div id="add-faq" class="modal fade" role="dialog">
+  <div class="modal-dialog width870">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create New FAQ</h4>
+      </div>
+      <div class="modal-body">
+        <form action="{% if edit %}{% url 'hc-save-faq-edit' id=faq_id %} {% else %} {% url 'hc-save-faq' %} {% endif %}" method="post">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form.as_p }}
+        <input type="submit" class="btn btn-sm btn-info" value="Save"/>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
