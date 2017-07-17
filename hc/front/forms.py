@@ -3,6 +3,8 @@ from tinymce.widgets import TinyMCE
 
 from hc.api.models import Channel
 from hc.front.models import Post
+from hc.front.models import FaqItem, FaqCategory
+from ckeditor.widgets import CKEditorWidget
 
 
 class NameTagsForm(forms.Form):
@@ -59,3 +61,18 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ("title", "body",)
+
+
+class AddFaqForm(forms.ModelForm):
+    body = forms.CharField(widget=CKEditorWidget())
+
+    class Meta:
+        model = FaqItem
+        fields = ['category', 'title', 'body']
+
+
+class AddFaqCategoryForm(forms.ModelForm):
+
+    class Meta:
+        model = FaqCategory
+        fields = ['category']
