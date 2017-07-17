@@ -15,6 +15,13 @@ a.post-action {
     font-size: small;
 }
 
+a.edit-post {
+    float: right;
+    font-size: large;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 h6.author {
     font-weight: bold;
 }
