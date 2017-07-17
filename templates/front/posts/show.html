@@ -21,7 +21,7 @@
                         {% endif %}
                     </h4>
                 </div>
-                <div class="col-sm-3 edit-post">
+                <div class="col-sm-3 edit-post social">
                     {% post_to_facebook post_or_url '<i class="fa fa-lg fa-facebook"></i>' %}
                     {% post_to_gplus post_or_url '<i class="fa fa-lg fa-google-plus"></i>' %}
                     {% if user.is_authenticated and user == post.user %}
