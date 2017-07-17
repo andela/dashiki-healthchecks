@@ -1,5 +1,6 @@
 {% extends "front/base_posts.html" %}
 {% load compress staticfiles %}
+{% load social_share %}
 
 {% block title %}
     Blog - healthchecks.io
@@ -47,20 +48,28 @@
                         (Not published)
                     {% endif %}
                 </h6>
-                {% if user.is_authenticated %}
-                    <a href="{% url "hc-update-post" post.slug %}" class="post-action">
-                        Edit
-                    </a> &middot;
-                    {% if user.is_superuser %}
-                        <a href="{% url "hc-publish-post" post.slug %}?state={% if post.publish %}false{% else %}true{% endif %}"
-                           class="post-action">
-                            {% if post.publish %}Unpublish{% else %}Publish{% endif %}
-                        </a> &middot;
-                    {% endif %}
-                    <a href="{% url "hc-delete-post" post.slug %}" class="post-action">
-                        Delete
-                    </a>
-                {% endif %}
+                <div class="row">
+                    <div class="col-sm-10">
+                        {% if user.is_authenticated %}
+                            <a href="{% url "hc-update-post" post.slug %}" class="post-action">
+                                Edit
+                            </a> &middot;
+                            {% if user.is_superuser %}
+                                <a href="{% url "hc-publish-post" post.slug %}?state={% if post.publish %}false{% else %}true{% endif %}"
+                                   class="post-action">
+                                    {% if post.publish %}Unpublish{% else %}Publish{% endif %}
+                                </a> &middot;
+                            {% endif %}
+                            <a href="{% url "hc-delete-post" post.slug %}" class="post-action">
+                                Delete
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-2 social_media">
+                        {% post_to_facebook post_or_url '<i class="fa fa-sm fa-facebook"></i>' %}
+                        {% post_to_gplus post_or_url '<i class="fa fa-sm fa-google-plus"></i>' %}
+                    </div>
+                </div>
             </div>
         {% endfor %}
     {% else %}

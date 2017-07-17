@@ -1,5 +1,6 @@
 {% extends "front/base_posts.html" %}
 {% load compress staticfiles %}
+{% load social_share %}
 
 {% block title %}
     Blog - healthchecks.io
@@ -20,9 +21,13 @@
                         {% endif %}
                     </h4>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3 edit-post">
+                    {% post_to_facebook post_or_url '<i class="fa fa-lg fa-facebook"></i>' %}
+                    {% post_to_gplus post_or_url '<i class="fa fa-lg fa-google-plus"></i>' %}
                     {% if user.is_authenticated and user == post.user %}
-                        <a href="{% url "hc-update-post" post.slug %}" class="edit-post">[Edit]</a>
+                        <a href="{% url "hc-update-post" post.slug %}" title="Edit">
+                            <i class="fa fa-sm fa-edit"></i>
+                        </a>
                     {% endif %}
                 </div>
             </div>
