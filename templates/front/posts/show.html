@@ -14,11 +14,16 @@
             <div class="row">
                 <div class="col-sm-9">
                     <h4 class="post-author">
-                        {{ post.user.last_name }} {{ post.user.first_name }} | Published: {{ post.created|date }}
+                        {{ post.user.last_name }} {{ post.user.first_name }} | Authored on: {{ post.created|date }}
+                        {% if not post.publish %}
+                            (Not published)
+                        {% endif %}
                     </h4>
                 </div>
                 <div class="col-sm-3">
-                    <a href="{% url "hc-update-post" post.slug %}" class="edit-post">[Edit]</a>
+                    {% if user.is_authenticated and user == post.user %}
+                        <a href="{% url "hc-update-post" post.slug %}" class="edit-post">[Edit]</a>
+                    {% endif %}
                 </div>
             </div>
             <p class="post-content">
