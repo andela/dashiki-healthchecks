@@ -17,7 +17,7 @@ import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 HOST = os.environ.get("HOST", "localhost")
-SECRET_KEY = "---"
+SECRET_KEY = os.environ.get("SECRET_KEY", "---")
 DEBUG = os.environ.get("DEBUG") or True
 ALLOWED_HOSTS = []
 DEFAULT_FROM_EMAIL = 'healthchecks@example.org'
@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django_filters',
     'tinymce',
     'django_social_share',
+    'djangobower',
 
     'hc.accounts',
     'hc.api',
@@ -117,7 +118,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
+    'djangobower.finders.BowerFinder'
 )
+
+BOWER_INSTALLED_APPS = ['font-awesome#4.7.0']
+
 COMPRESS_OFFLINE = True
 
 TINYMCE_DEFAULT_CONFIG = {
