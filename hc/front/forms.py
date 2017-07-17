@@ -49,13 +49,16 @@ class AddWebhookForm(forms.Form):
 
 
 class PostForm(forms.ModelForm):
-    title = forms.CharField(widget=forms.TextInput(
-        attrs={
-            "class": "form-control",
-            "placeholder": "Title",
-            "size": 108}),
-                            strip=True,
-                            label="")
+    title = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Title",
+                "size": 108
+            }),
+        strip=True,
+        label=""
+    )
     body = forms.CharField(widget=TinyMCE(attrs={'cols': 100, 'rows': 20}), label="")
 
     class Meta:

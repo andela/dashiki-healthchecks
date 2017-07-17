@@ -10,9 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Count
 from django.db.models import Q
-from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden, HttpResponse
 from django.core import signing
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
@@ -763,6 +761,7 @@ def publish_post(request, slug):
             post.publish = (state == "true")
             post.save()
     return redirect("hc-all-posts")
+
 
 @csrf_exempt
 @require_POST
