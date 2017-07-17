@@ -2,6 +2,13 @@ from django.conf.urls import include, url
 
 from hc.front import views
 
+post_urls = [
+    url(r'^$', views.show_post, name="hc-show-post"),
+    url(r'^edit/$', views.edit_post, name="hc-update-post"),
+    url(r'^publish/$', views.publish_post, name="hc-publish-post"),
+    url(r'^delete/$', views.delete_post, name="hc-delete-post")
+]
+
 check_urls = [
     url(r'^name/$', views.update_name, name="hc-update-name"),
     url(r'^timeout/$', views.update_timeout, name="hc-update-timeout"),
@@ -28,7 +35,6 @@ channel_urls = [
     url(r'^([\w-]+)/verify/([\w-]+)/$', views.verify_email,
         name="hc-verify-email"),
 ]
-
 urlpatterns = [
     url(r'^$', views.index, name="hc-index"),
     url(r'^checks/$', views.my_checks, name="hc-checks"),
@@ -36,6 +42,11 @@ urlpatterns = [
     url(r'^checks/add/$', views.add_check, name="hc-add-check"),
     url(r'^checks/([\w-]+)/', include(check_urls)),
     url(r'^integrations/', include(channel_urls)),
+
+    url(r'^posts/$', views.posts, name="hc-all-posts"),
+    url(r'^post/add/$', views.add_post, name="hc-add-post"),
+    url(r'^latest_post/$', views.latest_post, name="hc-post"),
+    url(r'^post/([\w-]+)/', include(post_urls)),
 
     url(r'^docs/$', views.docs, name="hc-docs"),
     url(r'^docs/api/$', views.docs_api, name="hc-docs-api"),

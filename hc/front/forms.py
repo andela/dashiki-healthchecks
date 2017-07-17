@@ -1,5 +1,8 @@
 from django import forms
+from tinymce.widgets import TinyMCE
+
 from hc.api.models import Channel
+from hc.front.models import Post
 
 
 class NameTagsForm(forms.Form):
@@ -41,3 +44,18 @@ class AddWebhookForm(forms.Form):
 
     def get_value(self):
         return "{value_down}\n{value_up}".format(**self.cleaned_data)
+
+
+class PostForm(forms.ModelForm):
+    title = forms.CharField(widget=forms.TextInput(
+        attrs={
+            "class": "form-control",
+            "placeholder": "Title",
+            "size": 108}),
+                            strip=True,
+                            label="")
+    body = forms.CharField(widget=TinyMCE(attrs={'cols': 100, 'rows': 20}), label="")
+
+    class Meta:
+        model = Post
+        fields = ("title", "body",)

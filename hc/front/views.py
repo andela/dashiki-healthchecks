@@ -1,3 +1,4 @@
+import os
 from collections import Counter
 from datetime import timedelta as td
 from itertools import tee
@@ -7,7 +8,9 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count
+from django.db.models import Q
 from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -17,8 +20,9 @@ from django.utils.six.moves.urllib.parse import urlencode
 
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, PRIORITY_LEVELS, Channel, Check, Ping, Priority
+from hc.front.models import Post
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
+                            TimeoutForm, PostForm)
 
 
 # from itertools recipes:
@@ -608,3 +612,144 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
+
+def posts(request):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        all_posts = Post.objects.all().order_by("-created")
+    elif request.user.is_authenticated():
+        all_posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")
+    else:
+        all_posts = Post.objects.filter(publish=True).order_by("-created")
+
+    paginator = Paginator(all_posts, os.environ.get("PER_PAGE", 6))
+    page = request.GET.get("page")
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    ctx = {
+        "page": "view-all-posts",
+        "section": "view-all-posts",
+        "posts": all_posts[:5],
+        "all_posts": posts
+    }
+    return render(request, "front/posts/index.html", ctx)
+
+
+def latest_post(request):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
+    ctx = {
+        "page": "posts",
+        "section": "posts",
+        "posts": posts,
+        "post": posts.first()
+    }
+    return render(request, "front/posts/show.html", ctx)
+
+
+def show_post(request, slug):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
+    ctx = {
+        "page": "show-post",
+        "section": "show-post",
+        "posts": posts,
+        "post": Post.objects.filter(slug=slug).first()
+    }
+    return render(request, "front/posts/show.html", ctx)
+
+
+@login_required
+def add_post(request):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
+    if request.method == "GET":
+        form = PostForm()
+        ctx = {
+            "page": "create-post",
+            "section": "create-post",
+            "form": form,
+            "posts": posts
+        }
+        return render(request, "front/posts/create.html", ctx)
+
+    if request.method == "POST":
+        post = Post()
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post.title = form.cleaned_data["title"]
+            post.body = form.cleaned_data["body"]
+            post.user = request.user
+            post.save()
+            return redirect("hc-post")
+
+
+@login_required
+def edit_post(request, slug):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
+    post = Post.objects.filter(slug=slug).first()
+
+    if request.method == "GET":
+        form = PostForm({"title": post.title, "body": post.body})
+        ctx = {
+            "page": "edit-post",
+            "section": "edit-post",
+            "form": form,
+            "posts": posts
+        }
+        return render(request, "front/posts/edit.html", ctx)
+
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post.title = form.cleaned_data["title"]
+            post.body = form.cleaned_data["body"]
+            post.save()
+        return redirect("hc-show-post", post.slug)
+
+
+@login_required
+def delete_post(request, slug):
+    post = Post.objects.filter(slug=slug).first()
+
+    if post:
+        post.delete()
+    return redirect("hc-all-posts")
+
+
+@login_required
+def publish_post(request, slug):
+    if request.user.is_superuser:
+        post = Post.objects.filter(slug=slug).first()
+        state = request.GET.get("state")
+
+        if post:
+            post.publish = (state == "true")
+            post.save()
+    return redirect("hc-all-posts")

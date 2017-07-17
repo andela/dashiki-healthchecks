@@ -10,3 +10,5 @@ static/.DS_Store
 
 .idea
 htmlcov
+
+bower_components

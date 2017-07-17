@@ -17,7 +17,7 @@ import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 HOST = os.environ.get("HOST", "localhost")
-SECRET_KEY = "---"
+SECRET_KEY = os.environ.get("SECRET_KEY", "---")
 DEBUG = os.environ.get("DEBUG") or True
 ALLOWED_HOSTS = []
 DEFAULT_FROM_EMAIL = 'healthchecks@example.org'
@@ -38,6 +38,9 @@ INSTALLED_APPS = (
     'rest_framework',
     'django_extensions',
     'django_filters',
+    'tinymce',
+    'django_social_share',
+    'djangobower',
 
     'hc.accounts',
     'hc.api',
@@ -115,8 +118,21 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
+    'djangobower.finders.BowerFinder'
 )
+
+BOWER_INSTALLED_APPS = ['font-awesome#4.7.0']
+
 COMPRESS_OFFLINE = True
+
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': "table,spellchecker,paste,searchreplace",
+    'theme': "advanced",
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 10,
+}
+TINYMCE_SPELLCHECKER = True
+TINYMCE_COMPRESSOR = True
 
 EMAIL_BACKEND = "djmail.backends.default.EmailBackend"
 
@@ -133,6 +149,15 @@ PUSHOVER_EMERGENCY_EXPIRATION = 86400
 # Pushbullet integration -- override these in local_settings
 PUSHBULLET_CLIENT_ID = None
 PUSHBULLET_CLIENT_SECRET = None
+
+# CKEditor
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': 300,
+    },
+}
 
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *

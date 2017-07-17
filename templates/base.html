@@ -30,6 +30,8 @@
     <link rel="stylesheet" href="{% static 'css/add_pushover.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/settings.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/bootstrap-switch.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/post.css' %}" type="text/css">
     {% endcompress %}
 </head>
 <body class="page-{{ page }}">
@@ -102,6 +104,10 @@
                 <li {% if page == 'about' %} class="active" {% endif %}>
                     <a href="{% url 'hc-about' %}">About</a>
                 </li>
+
+                <li {% if page == 'posts' %} class="active" {% endif %}>
+                    <a href="{% url 'hc-post' %}">Blog</a>
+                </li>
             </ul>
 
 
@@ -172,6 +178,8 @@
     {% compress js %}
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/tinymce/tinymce.min.js' %}"></script>
+    <script>tinymce.init({ selector:'textarea', menubar: 'false' });</script>
     {% endcompress %}
     {% endblock %}
 </body>
