@@ -38,9 +38,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'django_extensions',
     'django_filters',
-    'tinymce',
     'django_social_share',
-    'djangobower',
 
     'hc.accounts',
     'hc.api',
@@ -121,24 +119,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static-collected')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
-    'djangobower.finders.BowerFinder'
+    'compressor.finders.CompressorFinder'
 )
-
-BOWER_INSTALLED_APPS = ['font-awesome#4.7.0']
 
 COMPRESS_OFFLINE = True
 
-TINYMCE_DEFAULT_CONFIG = {
-    'plugins': "table,spellchecker,paste,searchreplace",
-    'theme': "advanced",
-    'cleanup_on_startup': True,
-    'custom_undo_redo_levels': 10,
-}
-TINYMCE_SPELLCHECKER = True
-TINYMCE_COMPRESSOR = True
-
-EMAIL_BACKEND = "djmail.backends.default.EmailBackend"
+EMAIL_BACKEND = "sgbackend.SendGridBackend"
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API")
 
 # Slack integration -- override these in local_settings
 SLACK_CLIENT_ID = None
@@ -157,9 +144,15 @@ PUSHBULLET_CLIENT_SECRET = None
 # CKEditor
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'full',
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Styles', 'Format', 'Font', 'FontSize', 'Bold', 'Italic', 'Underline',
+             'StrikeThrough', '-', 'Undo', 'Redo', 'NumberedList', 'BulletedList',
+             '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-',
+             'TextColor', 'BGColor', 'Smiley']
+        ],
         'height': 300,
-        'width': 300,
+        'width': '100%'
     },
 }
 
