@@ -119,15 +119,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static-collected')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
-    'djangobower.finders.BowerFinder'
+    'compressor.finders.CompressorFinder'
 )
-
-BOWER_INSTALLED_APPS = ['font-awesome#4.7.0']
 
 COMPRESS_OFFLINE = True
 
-EMAIL_BACKEND = "djmail.backends.default.EmailBackend"
+EMAIL_BACKEND = "sgbackend.SendGridBackend"
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API")
 
 # Slack integration -- override these in local_settings
 SLACK_CLIENT_ID = None
