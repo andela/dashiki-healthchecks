@@ -1,6 +1,4 @@
 from django import forms
-from tinymce.widgets import TinyMCE
-
 from hc.api.models import Channel
 from hc.front.models import Post
 from hc.front.models import FaqItem, FaqCategory
@@ -54,12 +52,12 @@ class PostForm(forms.ModelForm):
             attrs={
                 "class": "form-control",
                 "placeholder": "Title",
-                "size": 108
+                "style": 'width: 98%'
             }),
         strip=True,
         label=""
     )
-    body = forms.CharField(widget=TinyMCE(attrs={'cols': 100, 'rows': 20}), label="")
+    body = forms.CharField(widget=CKEditorWidget(), label="")
 
     class Meta:
         model = Post
@@ -67,7 +65,7 @@ class PostForm(forms.ModelForm):
 
 
 class AddFaqForm(forms.ModelForm):
-    body = forms.CharField(widget=CKEditorWidget())
+    body = forms.CharField(widget=CKEditorWidget(), label="")
 
     class Meta:
         model = FaqItem
