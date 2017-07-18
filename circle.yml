@@ -22,7 +22,13 @@ deployment:
     branch: develop
     heroku:
       appname: staging-dashiki-hc
+    commands:
+      - python manage.py ensuretriggers
+      - python manage.py sendalerts
   production:
     branch: master
     heroku:
       appname: production-dashiki-hc
+    commands:
+      - python manage.py ensuretriggers
+      - python manage.py sendalerts
