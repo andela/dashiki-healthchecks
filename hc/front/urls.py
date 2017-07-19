@@ -13,6 +13,8 @@ post_urls = [
 check_urls = [
     url(r'^name/$', views.update_name, name="hc-update-name"),
     url(r'^timeout/$', views.update_timeout, name="hc-update-timeout"),
+    url(r'^nag_time/$', views.set_nag_time, name="hc-set-nag-time"),
+    url(r'^remove_nag_time/$', views.remove_nag_time, name="hc-remove-nag"),
     url(r'^pause/$', views.pause, name="hc-pause"),
     url(r'^remove/$', views.remove_check, name="hc-remove-check"),
     url(r'^log/$', views.log, name="hc-log"),
@@ -38,6 +40,7 @@ channel_urls = [
     url(r'^([\w-]+)/verify/([\w-]+)/$', views.verify_email,
         name="hc-verify-email"),
 ]
+
 urlpatterns = [
     url(r'^$', views.index, name="hc-index"),
     url(r'^checks/$', views.my_checks, name="hc-checks"),
