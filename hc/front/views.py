@@ -33,7 +33,6 @@ from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
 from hc.front.models import (FaqCategory, FaqItem)
 
 
-
 # from itertools recipes:
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
@@ -211,82 +210,6 @@ def set_nag_time(request, code):
     if form.is_valid():
         check.nag_time = td(seconds=form.cleaned_data["nag_time"])
         check.save()
-
-    return redirect("hc-checks")
-
-
-@login_required
-@uuid_or_400
-def set_nag_time(request, code):
-    assert request.method == "POST"
-
-    check = get_object_or_404(Check, code=code)
-    if check.user != request.team.user:
-        return HttpResponseForbidden()
-
-    form = NagTimeForm(request.POST)
-    if form.is_valid():
-        check.nag_time = td(seconds=form.cleaned_data["nag_time"])
-        check.save()
-
-    return redirect("hc-checks")
-
-
-@login_required
-@uuid_or_400
-def set_nag_time(request, code):
-    assert request.method == "POST"
-
-    check = get_object_or_404(Check, code=code)
-    if check.user != request.team.user:
-        return HttpResponseForbidden()
-
-    form = NagTimeForm(request.POST)
-    if form.is_valid():
-        check.nag_time = td(seconds=form.cleaned_data["nag_time"])
-        check.save()
-
-    return redirect("hc-checks")
-
-
-@login_required
-@uuid_or_400
-def remove_nag_time(request, code):
-
-    check = get_object_or_404(Check, code=code)
-    if check.user_id != request.team.user.id:
-        return HttpResponseForbidden()
-
-    check.nag_time = td(hours=0)
-    check.save()
-
-    return redirect("hc-checks")
-
-
-@login_required
-@uuid_or_400
-def remove_nag_time(request, code):
-
-    check = get_object_or_404(Check, code=code)
-    if check.user_id != request.team.user.id:
-        return HttpResponseForbidden()
-
-    check.nag_time = td(hours=0)
-    check.save()
-
-    return redirect("hc-checks")
-
-
-@login_required
-@uuid_or_400
-def remove_nag_time(request, code):
-
-    check = get_object_or_404(Check, code=code)
-    if check.user_id != request.team.user.id:
-        return HttpResponseForbidden()
-
-    check.nag_time = td(hours=0)
-    check.save()
 
     return redirect("hc-checks")
 
