@@ -110,22 +110,10 @@ class Check(models.Model):
         errors = []
         channels = Priority.get_priority_channels(self)
         while self.nag_time and (self.status == "down"):
-            if not channels:
-                channels = self.channel_set.all()
-
-            for channel in channels:
-                error = channel.notify(self)
-                if error not in ("", "no-op"):
-                    errors.append((channel, error))
+            self._alert(channels, errors)
             time.sleep(self.nag_time)
         else:
-            if not channels:
-                channels = self.channel_set.all()
-
-            for channel in channels:
-                error = channel.notify(self)
-                if error not in ("", "no-op"):
-                    errors.append((channel, error))
+            self._alert(channels, errors)
         return errors
 
     def get_status(self):
@@ -138,6 +126,15 @@ class Check(models.Model):
             return "up"
 
         return "down"
+
+    def _alert(self, channels, errors):
+        if not channels:
+                channels = self.channel_set.all()
+
+        for channel in channels:
+            error = channel.notify(self)
+            if error not in ("", "no-op"):
+                errors.append((channel, error))
 
     def in_grace_period(self):
         if self.status in ("new", "paused"):
