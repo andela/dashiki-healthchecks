@@ -18,6 +18,9 @@
                 <h4 class="modal-title">Add video</h4>
             </div>
             <div class="modal-body">
+                <div id="video-upload__form--loading" style="display:none">
+                    <p>Uploading please wait ...</p>
+                </div>
                 <form id="video-upload__form" method="post" enctype="multipart/form-data" action="#">
                     {% csrf_token %}
                     <div class="row form-group">
@@ -101,6 +104,10 @@ $(function(){
                 $.ajax({
                     url:$url,
                     type:'post',
+                    beforeSend: function(){
+                        $('#video-upload__form').css('display','none');
+                        $('#video-upload__form--loading').css('display','block')
+                    },
                     data:$formData,
                     cache:false,
                     contentType:false,
@@ -112,6 +119,10 @@ $(function(){
                         }else{
                             alert($data);
                         }
+                    },
+                    complete:function(){
+                        $('#video-upload__form').css('display','block');
+                        $('#video-upload__form--loading').css('display','none')
                     },
                    error:function(err){
                         alert("Failed");
