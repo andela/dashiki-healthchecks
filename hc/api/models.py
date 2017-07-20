@@ -111,7 +111,7 @@ class Check(models.Model):
         channels = Priority.get_priority_channels(self)
         while self.nag_time and (self.status == "down"):
             errors = self._alert(channels, errors)
-            time.sleep(self.nag_time)
+            time.sleep(self.nag_time.total_seconds())
         else:
             errors = self._alert(channels, errors)
         return errors
