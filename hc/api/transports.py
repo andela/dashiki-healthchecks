@@ -216,3 +216,19 @@ class VictorOps(HttpTransport):
         }
 
         return self.post(self.channel.value, payload)
+
+
+class Telegram(HttpTransport):
+    TELEGRAM_URL = "https://api.telegram.org/bot%s/sendMessage" % settings.TELEGRAM_TOKEN
+
+    @staticmethod
+    def confirm_subscription(chat_id, text):
+        payload = {'chat_id': chat_id, 'text': text}
+        response = requests.post(Telegram.TELEGRAM_URL, payload)
+        return response
+
+    def notify(self, check):
+        text = tmpl("telegram_message.html", check=check)
+        payload = {'chat_id': self.channel.telegram_id, 'text': text}
+        response = self.request("post", self.TELEGRAM_URL, data=payload)
+        return response

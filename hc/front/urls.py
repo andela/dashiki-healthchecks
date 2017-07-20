@@ -3,9 +3,18 @@ from django.conf.urls import include, url
 from hc.front import views
 from hc.help_videos import urls as help_videos_urls
 
+post_urls = [
+    url(r'^$', views.show_post, name="hc-show-post"),
+    url(r'^edit/$', views.edit_post, name="hc-update-post"),
+    url(r'^publish/$', views.publish_post, name="hc-publish-post"),
+    url(r'^delete/$', views.delete_post, name="hc-delete-post")
+]
+
 check_urls = [
     url(r'^name/$', views.update_name, name="hc-update-name"),
     url(r'^timeout/$', views.update_timeout, name="hc-update-timeout"),
+    url(r'^nag_time/$', views.set_nag_time, name="hc-set-nag-time"),
+    url(r'^remove_nag_time/$', views.remove_nag_time, name="hc-remove-nag"),
     url(r'^pause/$', views.pause, name="hc-pause"),
     url(r'^remove/$', views.remove_check, name="hc-remove-check"),
     url(r'^log/$', views.log, name="hc-log"),
@@ -24,6 +33,8 @@ channel_urls = [
     url(r'^add_pushbullet/$', views.add_pushbullet, name="hc-add-pushbullet"),
     url(r'^add_pushover/$', views.add_pushover, name="hc-add-pushover"),
     url(r'^add_victorops/$', views.add_victorops, name="hc-add-victorops"),
+    url(r'^telegram/subscribe/$', views.subscribe_to_telegram_bot, name="hc-subscribe-telegram"),
+    url(r'^add_telegram/$', views.add_telegram, name="hc-add-telegram"),
     url(r'^([\w-]+)/checks/$', views.channel_checks, name="hc-channel-checks"),
     url(r'^([\w-]+)/remove/$', views.remove_channel, name="hc-remove-channel"),
     url(r'^([\w-]+)/verify/([\w-]+)/$', views.verify_email,
@@ -37,6 +48,11 @@ urlpatterns = [
     url(r'^checks/add/$', views.add_check, name="hc-add-check"),
     url(r'^checks/([\w-]+)/', include(check_urls)),
     url(r'^integrations/', include(channel_urls)),
+
+    url(r'^posts/$', views.posts, name="hc-all-posts"),
+    url(r'^post/add/$', views.add_post, name="hc-add-post"),
+    url(r'^latest_post/$', views.latest_post, name="hc-post"),
+    url(r'^post/([\w-]+)/', include(post_urls)),
 
     url(r'^docs/$', views.docs, name="hc-docs"),
     url(r'^docs/api/$', views.docs_api, name="hc-docs-api"),

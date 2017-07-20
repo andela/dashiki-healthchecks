@@ -1,24 +1,35 @@
+import os
 from collections import Counter
 from datetime import timedelta as td
 from itertools import tee
+import json
 
 import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
+from django.core import signing
 from django.db.models import Count
-from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import (Http404, HttpResponse, HttpResponseBadRequest,
+                         HttpResponseForbidden)
 
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, PRIORITY_LEVELS, Channel, Check, Ping, Priority
+from hc.front.models import Post
+from hc.api.transports import Telegram
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm, AddFaqForm, AddFaqCategoryForm)
+                            TimeoutForm, AddFaqForm, AddFaqCategoryForm, PostForm, NagTimeForm)
 from hc.front.models import (FaqCategory, FaqItem)
 
 
@@ -182,6 +193,37 @@ def update_timeout(request, code):
         check.timeout = td(seconds=form.cleaned_data["timeout"])
         check.grace = td(seconds=form.cleaned_data["grace"])
         check.save()
+
+    return redirect("hc-checks")
+
+
+@login_required
+@uuid_or_400
+def set_nag_time(request, code):
+    assert request.method == "POST"
+
+    check = get_object_or_404(Check, code=code)
+    if check.user != request.team.user:
+        return HttpResponseForbidden()
+
+    form = NagTimeForm(request.POST)
+    if form.is_valid():
+        check.nag_time = td(seconds=form.cleaned_data["nag_time"])
+        check.save()
+
+    return redirect("hc-checks")
+
+
+@login_required
+@uuid_or_400
+def remove_nag_time(request, code):
+
+    check = get_object_or_404(Check, code=code)
+    if check.user_id != request.team.user.id:
+        return HttpResponseForbidden()
+
+    check.nag_time = td(hours=0)
+    check.save()
 
     return redirect("hc-checks")
 
@@ -609,6 +651,195 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
+
+def posts(request):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        all_posts = Post.objects.all().order_by("-created")
+    elif request.user.is_authenticated():
+        all_posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")
+    else:
+        all_posts = Post.objects.filter(publish=True).order_by("-created")
+
+    paginator = Paginator(all_posts, os.environ.get("PER_PAGE", 6))
+    page = request.GET.get("page")
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    ctx = {
+        "page": "view-all-posts",
+        "section": "view-all-posts",
+        "posts": all_posts[:5],
+        "all_posts": posts
+    }
+    return render(request, "front/posts/index.html", ctx)
+
+
+def latest_post(request):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
+    ctx = {
+        "page": "posts",
+        "section": "posts",
+        "posts": posts,
+        "post": posts.first()
+    }
+    return render(request, "front/posts/show.html", ctx)
+
+
+def show_post(request, slug):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
+    ctx = {
+        "page": "show-post",
+        "section": "show-post",
+        "posts": posts,
+        "post": Post.objects.filter(slug=slug).first()
+    }
+    return render(request, "front/posts/show.html", ctx)
+
+
+@login_required
+def add_post(request):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
+    if request.method == "GET":
+        form = PostForm()
+        ctx = {
+            "page": "create-post",
+            "section": "create-post",
+            "form": form,
+            "posts": posts
+        }
+        return render(request, "front/posts/create.html", ctx)
+
+    if request.method == "POST":
+        post = Post()
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post.title = form.cleaned_data["title"]
+            post.body = form.cleaned_data["body"]
+            post.user = request.user
+            post.save()
+            return redirect("hc-post")
+
+
+@login_required
+def edit_post(request, slug):
+    if request.user.is_authenticated() and request.user.is_superuser:
+        posts = Post.objects.all().order_by("-created")[:5]
+    elif request.user.is_authenticated():
+        posts = Post.objects.filter(Q(publish=True) | Q(user=request.user)).order_by("-created")[:5]
+    else:
+        posts = Post.objects.filter(publish=True).order_by("-created")[:5]
+
+    post = Post.objects.filter(slug=slug).first()
+
+    if request.method == "GET":
+        form = PostForm({"title": post.title, "body": post.body})
+        ctx = {
+            "page": "edit-post",
+            "section": "edit-post",
+            "form": form,
+            "posts": posts
+        }
+        return render(request, "front/posts/edit.html", ctx)
+
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post.title = form.cleaned_data["title"]
+            post.body = form.cleaned_data["body"]
+            post.save()
+        return redirect("hc-show-post", post.slug)
+
+
+@login_required
+def delete_post(request, slug):
+    post = Post.objects.filter(slug=slug).first()
+
+    if post:
+        post.delete()
+    return redirect("hc-all-posts")
+
+
+@login_required
+def publish_post(request, slug):
+    if request.user.is_superuser:
+        post = Post.objects.filter(slug=slug).first()
+        state = request.GET.get("state")
+
+        if post:
+            post.publish = (state == "true")
+            post.save()
+    return redirect("hc-all-posts")
+
+
+@csrf_exempt
+@require_POST
+def subscribe_to_telegram_bot(request):
+    try:
+        response = json.loads(request.body.decode("utf-8"))
+    except ValueError:
+        return HttpResponseBadRequest()
+
+    if "/start" not in response["message"]["text"]:
+        print("Start command: ", response["message"]["text"])
+        return HttpResponse()
+
+    chat = response["message"]["chat"]
+    name = max(chat.get("title", ""), chat.get("username", ""))
+
+    invite = render_to_string("integrations/telegram_invite.html", {
+        "qs": signing.dumps((chat["id"], chat["type"], name)), "site_root": settings.SITE_ROOT
+    })
+
+    Telegram.confirm_subscription(chat["id"], invite)
+    return HttpResponse()
+
+
+@login_required
+def add_telegram(request):
+    chat_id, chat_type, chat_name = None, None, None
+    qs = request.META["QUERY_STRING"]
+    if qs:
+        chat_id, chat_type, chat_name = signing.loads(qs, max_age=600)
+
+    if request.method == "POST":
+        channel = Channel(user=request.team.user, kind="telegram")
+        channel.value = json.dumps({
+            "id": chat_id,
+            "type": chat_type,
+            "name": chat_name
+        })
+        channel.save()
+
+        channel.assign_all_checks()
+        messages.success(request, "Your Telegram integration has been added!")
+        return redirect("hc-channels")
+
+    chat = {"chat_id": chat_id}
+
+    return render(request, "integrations/add_telegram.html", chat)
 
 
 def docs_faq(request):

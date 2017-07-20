@@ -1,5 +1,6 @@
 from django import forms
 from hc.api.models import Channel
+from hc.front.models import Post
 from hc.front.models import FaqItem, FaqCategory
 from ckeditor.widgets import CKEditorWidget
 
@@ -24,6 +25,10 @@ class TimeoutForm(forms.Form):
     grace = forms.IntegerField(min_value=60, max_value=2592000)
 
 
+class NagTimeForm(forms.Form):
+    nag_time = forms.IntegerField(min_value=60, max_value=2592000)
+
+
 class AddChannelForm(forms.ModelForm):
 
     class Meta:
@@ -45,8 +50,26 @@ class AddWebhookForm(forms.Form):
         return "{value_down}\n{value_up}".format(**self.cleaned_data)
 
 
+class PostForm(forms.ModelForm):
+    title = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Title",
+                "style": 'width: 98%'
+            }),
+        strip=True,
+        label=""
+    )
+    body = forms.CharField(widget=CKEditorWidget(), label="")
+
+    class Meta:
+        model = Post
+        fields = ("title", "body",)
+
+
 class AddFaqForm(forms.ModelForm):
-    body = forms.CharField(widget=CKEditorWidget())
+    body = forms.CharField(widget=CKEditorWidget(), label="")
 
     class Meta:
         model = FaqItem

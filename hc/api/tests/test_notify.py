@@ -2,6 +2,10 @@ import json
 
 from django.core import mail
 from django.test import override_settings
+from django.core import signing
+from django.conf import settings
+from rest_framework.reverse import reverse
+
 from hc.api.models import Channel, Check, Notification
 from hc.test import BaseTestCase
 from mock import patch, Mock
@@ -234,3 +238,65 @@ class NotifyTestCase(BaseTestCase):
 
         self.channel.notify = Mock(side_effect=ConnectionError)
         self.assertRaises(ConnectionError, self.channel.notify, self.check)
+
+    @patch("hc.api.transports.requests.request")
+    def test_telegram(self, mock_post):
+        chat = json.dumps({"id": 123})
+        self._setup_data("telegram", chat)
+        mock_post.return_value.status_code = 200
+
+        self.channel.notify(self.check)
+        assert Notification.objects.count() == 1
+
+        args, kwargs = mock_post.call_args
+        data = kwargs["data"]
+        self.assertEqual(data.get("chat_id"), 123)
+        self.assertTrue("The check" in data.get("text"))
+
+    @patch("hc.front.views.json.loads")
+    @patch("hc.api.transports.requests.post")
+    def test_telegram_subscription(self, mock_post, mock_loads):
+        chat_id = 370353648
+        data_from_telegram = {
+            "update_id": 496938208,
+            "message": {
+                "message_id": 95,
+                "from": {
+                    "id": chat_id,
+                    "first_name": "Edwin",
+                    "last_name": "Kato",
+                    "language_code": "en-US"
+                },
+                "chat": {
+                    "id": chat_id,
+                    "first_name": "Edwin",
+                    "last_name": "Kato",
+                    "type": "private"
+                },
+                "date": 1500289821,
+                "text": "/start",
+                "entities": [
+                    {
+                        "type": "bot_command",
+                        "offset": 0,
+                        "length": 6
+                    }
+                ]
+            }
+        }
+
+        chat = data_from_telegram["message"]["chat"]
+        name = max(chat.get("title", ""), chat.get("username", ""))
+        invite = signing.dumps((chat_id, chat["type"], name))
+        url = settings.SITE_ROOT + "/integrations/add_telegram/?" + invite
+        telegram_end_point = "https://api.telegram.org/bot{}/sendMessage".format(settings.TELEGRAM_TOKEN)
+        text = "\n\nPlease open this link to complete the dashiki health checks integration:\n\n" + url + "\n"
+
+        payload = {
+            'chat_id': chat_id,
+            'text': text
+        }
+
+        mock_loads.return_value = data_from_telegram
+        self.client.post(reverse("hc-subscribe-telegram"), data=data_from_telegram)
+        mock_post.assert_called_once_with(telegram_end_point, payload)

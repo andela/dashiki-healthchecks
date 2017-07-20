@@ -17,7 +17,7 @@ import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 HOST = os.environ.get("HOST", "localhost")
-SECRET_KEY = "---"
+SECRET_KEY = os.environ.get("SECRET_KEY", "---")
 DEBUG = os.environ.get("DEBUG") or True
 ALLOWED_HOSTS = []
 DEFAULT_FROM_EMAIL = 'healthchecks@example.org'
@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'django_extensions',
     'django_filters',
+    'django_social_share',
 
     'hc.accounts',
     'hc.api',
@@ -118,11 +119,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static-collected')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
+    'compressor.finders.CompressorFinder'
 )
+
 COMPRESS_OFFLINE = True
 
-EMAIL_BACKEND = "djmail.backends.default.EmailBackend"
+EMAIL_BACKEND = "sgbackend.SendGridBackend"
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API")
 
 # Slack integration -- override these in local_settings
 SLACK_CLIENT_ID = None
@@ -137,6 +140,25 @@ PUSHOVER_EMERGENCY_EXPIRATION = 86400
 # Pushbullet integration -- override these in local_settings
 PUSHBULLET_CLIENT_ID = None
 PUSHBULLET_CLIENT_SECRET = None
+
+# CKEditor
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Styles', 'Format', 'Font', 'FontSize', 'Bold', 'Italic', 'Underline',
+             'StrikeThrough', '-', 'Undo', 'Redo', 'NumberedList', 'BulletedList',
+             '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-',
+             'TextColor', 'BGColor', 'Smiley']
+        ],
+        'height': 300,
+        'width': '100%'
+    },
+}
+
+# Telegram integration
+TELEGRAM_BOT_NAME = os.environ.get("TELEGRAM_BOT_NAME")
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 # setup media upload path
 MEDIA_URL = "/media/"

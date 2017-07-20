@@ -1,0 +1,75 @@
+.list_heading {
+    padding-bottom: 0.5em;
+}
+
+div.post {
+    padding-bottom: 0.9em;
+    font-size: large;
+    border-bottom: 1px gainsboro solid;
+}
+
+div.paginate {
+    margin-top: 0.7em;
+}
+
+a.post-action {
+    font-size: small;
+}
+
+.edit-post > div, .edit-post > a {
+    display: inline-block;
+    padding: 0 10px 0 10px;
+    margin-left: .5em;
+    float: right;
+}
+
+.edit-post {
+    font-size: large;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+h6.author {
+    font-weight: bold;
+}
+
+h2.post-heading {
+    font-size: 2.7em !important;
+}
+
+h4.post-author {
+    font-size: 15px !important;
+    padding-left: 5px;
+    padding-bottom: 1em;
+}
+
+p.post-content {
+    padding-left: 5px;
+}
+
+div.single-post > p {
+    font-size: large;
+    padding-left: 5px;
+}
+
+.social_media > div {
+    width: 20px;
+    display: inline-block;
+    margin-left: 1em;
+}
+
+.social .fa-facebook:hover {
+    color: #4060A5;
+}
+
+.social .fa-twitter:hover {
+    color: #00ABE3;
+}
+
+.social .fa-google-plus:hover {
+    color: #e64522;
+}
+
+.social .fa-linkedin:hover {
+    color: #0094BC;
+}
