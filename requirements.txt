@@ -30,7 +30,7 @@ django-js-asset==0.1.1
 django-ses-backend==0.1.1
 django-social-share==1.1.2
 django-tinymce==2.6.0
-djangorestframework==3.6.3
+djangorestframework==3.11.2
 djmail==0.11.0
 docopt==0.6.2
 flake8==3.3.0
