@@ -17,7 +17,7 @@ cssselect==1.0.1
 cssutils==1.0.2
 decorator==4.0.11
 dj-database-url==0.4.2
-Django==1.10
+Django==2.2.24
 django-appconf==1.0.1
 django-bower==5.2.0
 django-ckeditor==5.3.0
